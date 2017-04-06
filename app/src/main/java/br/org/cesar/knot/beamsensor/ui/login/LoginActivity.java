@@ -1,6 +1,5 @@
-package br.org.cesar.knot.beamsensor.login;
+package br.org.cesar.knot.beamsensor.ui.login;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -15,14 +14,10 @@ import org.json.JSONException;
 import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
-import br.org.cesar.knot.beamsensor.communication.Communication;
 import br.org.cesar.knot.beamsensor.controller.BeamController;
-import br.org.cesar.knot.beamsensor.map.SensorMapActivity;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
-import br.org.cesar.knot.beamsensor.model.Subscriber;
 import br.org.cesar.knot.beamsensor.model.SubscriberDataListener;
-import br.org.cesar.knot.lib.event.Event;
 import br.org.cesar.knot.lib.exception.InvalidParametersException;
 import br.org.cesar.knot.lib.exception.KnotException;
 import br.org.cesar.knot.lib.exception.SocketNotConnected;

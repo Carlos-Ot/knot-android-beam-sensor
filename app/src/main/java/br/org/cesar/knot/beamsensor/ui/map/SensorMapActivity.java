@@ -1,4 +1,4 @@
-package br.org.cesar.knot.beamsensor.map;
+package br.org.cesar.knot.beamsensor.ui.map;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

@@ -5,9 +5,10 @@ import org.json.JSONException;
 
 import br.org.cesar.knot.beamsensor.communication.BeamCommunication;
 import br.org.cesar.knot.beamsensor.communication.BeamCommunicationFactory;
+import br.org.cesar.knot.beamsensor.data.networking.callback.AuthenticateRequestCallback;
+import br.org.cesar.knot.beamsensor.data.networking.callback.SensorsRequestCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
 import br.org.cesar.knot.beamsensor.model.Subscriber;
-import br.org.cesar.knot.beamsensor.model.SubscriberDataListener;
 import br.org.cesar.knot.lib.exception.InvalidParametersException;
 import br.org.cesar.knot.lib.exception.KnotException;
 import br.org.cesar.knot.lib.exception.SocketNotConnected;
@@ -17,33 +18,44 @@ import br.org.cesar.knot.lib.exception.SocketNotConnected;
  */
 
 public class BeamController {
-    private BeamCommunication communication;
-    private static BeamController instance = new BeamController();
+    private BeamCommunication mCommunication;
+    private static BeamController sInstance = new BeamController();
 
 
-    private BeamController(){
+    private BeamController() {
         try {
-            communication = BeamCommunicationFactory.getBeamCommunication(BeamCommunicationFactory.BeamCommunicationProtocol.WSS);
+            mCommunication = BeamCommunicationFactory.getBeamCommunication(BeamCommunicationFactory.BeamCommunicationProtocol.WSS);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static BeamController getInstance(){
-        return instance;
+    public synchronized static BeamController getInstance() {
+
+        synchronized (BeamController.class) {
+
+            if (sInstance == null) {
+                sInstance = new BeamController();
+            }
+        }
+
+        return sInstance;
+    }
+//
+//    public void subscribe(Subscriber subscriber) {
+//        mCommunication.addListener(subscriber);
+//    }
+//
+//    public void unSubscribe(Subscriber subscriber) {
+//        mCommunication.removeListener(subscriber);
+//    }
+
+    public void getSensor(BeamSensorFilter filter, SensorsRequestCallback callback) {
+        mCommunication.getSensors(filter, callback);
     }
 
-    public void subscribeDataListener(SubscriberDataListener subscriberDataListener){
-        communication.subscriberListener(subscriberDataListener);
-    }
-
-    public void getSensor(BeamSensorFilter filter) throws InvalidParametersException, SocketNotConnected, KnotException, JSONException {
-       communication.getSensors(filter);
-    }
-
-    public void openCommunication(String url, int port, String user, String password, Subscriber listener) throws Exception {
-        communication.open(url, port
-                , user, password, listener);
+    public void authenticate(String url, int port, String user, String password, AuthenticateRequestCallback callback) {
+        mCommunication.authenticate(url, port, user, password, callback);
     }
 
     /*

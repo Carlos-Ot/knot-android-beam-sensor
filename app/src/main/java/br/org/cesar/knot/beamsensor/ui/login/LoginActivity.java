@@ -1,37 +1,37 @@
 package br.org.cesar.knot.beamsensor.ui.login;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-
-import org.json.JSONException;
-
-import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.controller.BeamController;
-import br.org.cesar.knot.beamsensor.model.BeamSensor;
-import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
-import br.org.cesar.knot.beamsensor.model.SubscriberDataListener;
-import br.org.cesar.knot.lib.exception.InvalidParametersException;
-import br.org.cesar.knot.lib.exception.KnotException;
-import br.org.cesar.knot.lib.exception.SocketNotConnected;
+import br.org.cesar.knot.beamsensor.data.local.PreferencesManager;
+import br.org.cesar.knot.beamsensor.data.networking.callback.AuthenticateRequestCallback;
+import br.org.cesar.knot.beamsensor.ui.list.DeviceListActivity;
+import br.org.cesar.knot.beamsensor.util.Constants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends AppCompatActivity implements SubscriberDataListener {
+public class LoginActivity extends AppCompatActivity implements AuthenticateRequestCallback {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
-    @BindView(R.id.loginTextInputAddress)
-    TextInputEditText mCloudIpEditText;
-    @BindView(R.id.loginTextInputPort)
-    TextInputEditText mPortEditText;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.loginRoot)
+    View mRootView;
     @BindView(R.id.loginTextInputUsername)
     TextInputEditText mUsernameEditText;
     @BindView(R.id.loginTextInputPassword)
@@ -39,30 +39,15 @@ public class LoginActivity extends AppCompatActivity implements SubscriberDataLi
     @BindView(R.id.loginButton)
     Button mLoginButton;
 
-    //private Communication mKnotSocketCommunication;
-    BeamController beamController = BeamController.getInstance();
+    private Dialog mCloudDialog;
 
-    private TextWatcher mServerEmptyWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+    private PreferencesManager mPreferencesManager;
 
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-            checkServerFieldsForEmptyValues();
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-
-        }
-    };
+    private BeamController mBeamController;
 
     private TextWatcher mCredentialsEmptyWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-
         }
 
         @Override
@@ -72,7 +57,6 @@ public class LoginActivity extends AppCompatActivity implements SubscriberDataLi
 
         @Override
         public void afterTextChanged(Editable editable) {
-
         }
     };
 
@@ -82,18 +66,37 @@ public class LoginActivity extends AppCompatActivity implements SubscriberDataLi
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        //mKnotSocketCommunication = Communication.getInstance();
+        setSupportActionBar(mToolbar);
 
-                        mCloudIpEditText.addTextChangedListener(mServerEmptyWatcher);
-        mPortEditText.addTextChangedListener(mServerEmptyWatcher);
+        mPreferencesManager = PreferencesManager.getInstance();
+
+//        mCloudIpEditText.addTextChangedListener(mServerEmptyWatcher);
+//        mPortEditText.addTextChangedListener(mServerEmptyWatcher);
 
         mUsernameEditText.addTextChangedListener(mCredentialsEmptyWatcher);
         mPasswordEditText.addTextChangedListener(mCredentialsEmptyWatcher);
 
-        mCloudIpEditText.setText("10.211.55.19");
-        mPortEditText.setText("3000");
+        this.mBeamController = BeamController.getInstance();
+
+        //TODO remover
+//        mCloudIpEditText.setText("10.211.55.19");
+//        mPortEditText.setText("3000");
         mUsernameEditText.setText("calberto");
         mPasswordEditText.setText("123456");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        showCloudSetupScreen();
+
+        return true;
     }
 
     private void enableCredentialsEditText(boolean enable) {
@@ -105,14 +108,6 @@ public class LoginActivity extends AppCompatActivity implements SubscriberDataLi
         mLoginButton.setEnabled(enable);
     }
 
-    private void checkServerFieldsForEmptyValues() {
-        if (!mCloudIpEditText.getText().toString().isEmpty()
-                && !mPortEditText.getText().toString().isEmpty()) {
-            enableCredentialsEditText(true);
-        } else {
-            enableCredentialsEditText(false);
-        }
-    }
 
     private void checkCredentialsFieldForEmptyValues() {
         if (!mUsernameEditText.getText().toString().isEmpty()
@@ -123,103 +118,98 @@ public class LoginActivity extends AppCompatActivity implements SubscriberDataLi
         }
     }
 
+    private boolean validateCloudInfo() {
+
+        boolean cloudIpOk = mPreferencesManager.getCloudIp() != null && !mPreferencesManager.getCloudIp().trim().isEmpty();
+
+        boolean cloudPortOk = mPreferencesManager.getCloudPort() != Constants.INVALID_CLOUD_PORT;
+
+        return cloudIpOk && cloudPortOk;
+    }
+
     @OnClick(R.id.loginButton)
     void performLogin() {
         Log.d(TAG, "Login button pressed");
-        String mCloudIp = mCloudIpEditText.getText().toString();
-        int mPort = Integer.parseInt(mPortEditText.getText().toString());
-        String mUsername = mUsernameEditText.getText().toString();
-        String mPassword = mPasswordEditText.getText().toString();
-        try {
-            beamController.openCommunication(mCloudIp,mPort,mUsername,mPassword,this);
-//            beamController.openCommunication(mCloudIp,mPort,mUsername,mPassword,new Event<Boolean>(){
+//        String mCloudIp = mCloudIpEditText.getText().toString();
+//        int mPort = Integer.parseInt(mPortEditText.getText().toString());
+
+
+        if (validateCloudInfo()) {
+
+            String mUsername = mUsernameEditText.getText().toString();
+            String mPassword = mPasswordEditText.getText().toString();
+
+            this.mBeamController.authenticate(mPreferencesManager.getCloudIp(), mPreferencesManager.getCloudPort(), mUsername, mPassword, this);
+
+
+        } else {
+
+            //TODO show snackbar
+            Snackbar snackbar = Snackbar.make(mRootView, "Setup cloud info", Snackbar.LENGTH_LONG);
+            snackbar.setAction("Settings", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showCloudSetupScreen();
+                }
+            });
+            snackbar.show();
+        }
+
+
+    }
+
+    @Override
+    public void onAuthenticateSuccess() {
+
+        mPreferencesManager.setUsername(mUsernameEditText.getText().toString());
+
+        startActivity(new Intent(this, DeviceListActivity.class));
+        finish();
+//        this.mBeamController.getSensor(new BeamSensorFilter());
+    }
+
+    @Override
+    public void onAuthenticateFailed() {
+
+        //TODO
+    }
+
+
+    private void showCloudSetupScreen() {
+
+        startActivity(new Intent(this, CloudSetupActivity.class));
+
+//        if (mCloudDialog == null) {
+//            mCloudDialog = new Dialog(this, R.style.FullHeightDialog);
+//
+//            mCloudDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//            mCloudDialog.setContentView(R.layout.cloud_dialog_layout);
+//
+//            final TextInputEditText ipEditText = (TextInputEditText) mCloudDialog.findViewById(R.id.loginTextInputAddress);
+//
+//            final TextInputEditText portEditText = (TextInputEditText) mCloudDialog.findViewById(R.id.loginTextInputPort);
+//
+//            final Button saveButton = (Button) mCloudDialog.findViewById(R.id.saveButton);
+//
+//            saveButton.setOnClickListener(new View.OnClickListener() {
 //                @Override
-//                public void onEventFinish(Boolean object) {
-//                    if(object.booleanValue()) {
-//                        Log.d("Carlos", "Opened");
-//                        Intent i = new Intent(getBaseContext(), SensorMapActivity.class);
-//                        startActivity(i);
-//                        finish();
-//                        //Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT);
+//                public void onClick(View view) {
+//                    String ip = ipEditText.getText().toString();
+//                    if (!ip.trim().isEmpty()) {
+//                        mPreferencesManager.setCloudIp(ip);
+//                    }
+//
+//                    String port = portEditText.getText().toString();
+//                    if (!port.trim().isEmpty()) {
+//                        mPreferencesManager.setCloudPort(port);
 //                    }
 //                }
-//
-//                @Override
-//                public void onEventError(Exception e) {
-//                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT);
-//                }
 //            });
+//        }
+//
+//        if (!mCloudDialog.isShowing()) {
+//            mCloudDialog.show();
+//        }
 
-        } catch (Exception e) {
-            Toast.makeText(this.getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT);
-        }
     }
-
-    private Exception currentException;
-    @Override
-    public void setError(Exception error) {
-        Log.d("Login",error.getMessage());
-        currentException = error;
-    }
-
-    @Override
-    public Exception getError() {
-        return currentException;
-    }
-
-    @Override
-    public int getId() {
-        return 1;
-    }
-
-    @Override
-    public void ready() {
-        Log.d("Login","Subscriber Ready");
-        beamController.subscribeDataListener(this);
-        try {
-            beamController.getSensor(new BeamSensorFilter());
-        } catch (InvalidParametersException e) {
-                                    e.printStackTrace();
-        } catch (SocketNotConnected socketNotConnected) {
-            socketNotConnected.printStackTrace();
-        } catch (KnotException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void notReady() {
-        Log.d("Login","Subscriber Not Ready");
-    }
-
-    List<BeamSensor> currentData;
-
-    @Override
-    public void setData(List<BeamSensor> data) {
-        currentData = data;
-        for (int i = 0; i < data.size(); i++){
-            Log.d("BeamSensor",data.get(i).getUuid());
-        }
-    }
-
-    @Override
-    public List<BeamSensor> getData() {
-        return currentData;
-    }
-
-    //  @OnClick(R.id.loginButton)
-  //  void performLogin() {
-  //      Log.d(TAG, "Login button pressed");
-  //      String userName = mUsernameEditText.getText().toString();
-  //      String password = mPasswordEditText.getText().toString();
-
-        //Configuring socket with uuid and socket
-        //mKnotSocketCommunication.configureSocketWithDeviceInformation(userName,password);
-
-        //mKnotSocketCommunication.openConnection("http://172.17.120.174:3000",this);
-
-   // }
-
 }

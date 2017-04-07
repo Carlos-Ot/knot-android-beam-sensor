@@ -8,13 +8,15 @@ import java.util.List;
 
 public interface Subscriber {
 
-    void setError(Exception error);
+    void notifyError(Exception error);
 
-    Exception getError();
-
-    int getId();
+//    Exception getError();
 
     void ready();
 
     void notReady();
+
+    void notifyData(List<BeamSensor> data);
+
+//    List<BeamSensor> getData();
 }

@@ -26,10 +26,8 @@ public class Communication {
 
                 authenticate();
 
-            } catch (InvalidParametersException e) {
-//                e.printStackTrace();
-            } catch (SocketNotConnected socketNotConnected) {
-//                socketNotConnected.printStackTrace();
+            } catch (InvalidParametersException | SocketNotConnected e) {
+                e.printStackTrace();
             }
         }
 

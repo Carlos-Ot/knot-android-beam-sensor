@@ -5,4 +5,12 @@
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="text_login">Login</string>
+    <string name="text_save">Save</string>
+
+    <string name="text_authentication_failed">Authentication failed!</string>
+    <string name="text_cloud_info_saved">Cloud info successfully saved!</string>
+
+    <string name="title_login">Login</string>
+    <string name="title_setup">Setup Cloud</string>
+
 </resources>

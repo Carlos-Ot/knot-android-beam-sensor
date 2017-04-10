@@ -5,6 +5,6 @@
         android:id="@+id/dropdown_menu"
         app:showAsAction="ifRoom"
         android:title="Options"
-        android:icon="@android:drawable/ic_menu_preferences"/>
+        android:icon="@drawable/ic_settings_black_24dp"/>
 
 </menu>

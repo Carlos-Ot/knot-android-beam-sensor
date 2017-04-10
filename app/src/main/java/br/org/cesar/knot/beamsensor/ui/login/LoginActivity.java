@@ -1,6 +1,5 @@
 package br.org.cesar.knot.beamsensor.ui.login;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -14,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.controller.BeamController;
@@ -38,8 +38,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
     TextInputEditText mPasswordEditText;
     @BindView(R.id.loginButton)
     Button mLoginButton;
-
-    private Dialog mCloudDialog;
 
     private PreferencesManager mPreferencesManager;
 
@@ -67,22 +65,24 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
+        mToolbar.setTitle(R.string.title_login);
 
         mPreferencesManager = PreferencesManager.getInstance();
-
-//        mCloudIpEditText.addTextChangedListener(mServerEmptyWatcher);
-//        mPortEditText.addTextChangedListener(mServerEmptyWatcher);
 
         mUsernameEditText.addTextChangedListener(mCredentialsEmptyWatcher);
         mPasswordEditText.addTextChangedListener(mCredentialsEmptyWatcher);
 
         this.mBeamController = BeamController.getInstance();
 
+        if (mPreferencesManager.getUsername() != null &&
+                !mPreferencesManager.getUsername().isEmpty()) {
+            mUsernameEditText.setText(mPreferencesManager.getUsername());
+        }
+
         //TODO remover
-//        mCloudIpEditText.setText("10.211.55.19");
-//        mPortEditText.setText("3000");
         mUsernameEditText.setText("calberto");
         mPasswordEditText.setText("123456");
+
     }
 
     @Override
@@ -95,13 +95,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
     public boolean onOptionsItemSelected(MenuItem item) {
 
         showCloudSetupScreen();
-
         return true;
-    }
-
-    private void enableCredentialsEditText(boolean enable) {
-        mUsernameEditText.setEnabled(enable);
-        mPasswordEditText.setEnabled(enable);
     }
 
     private void enableLoginButton(boolean enable) {
@@ -130,17 +124,14 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
     @OnClick(R.id.loginButton)
     void performLogin() {
         Log.d(TAG, "Login button pressed");
-//        String mCloudIp = mCloudIpEditText.getText().toString();
-//        int mPort = Integer.parseInt(mPortEditText.getText().toString());
-
 
         if (validateCloudInfo()) {
 
             String mUsername = mUsernameEditText.getText().toString();
             String mPassword = mPasswordEditText.getText().toString();
 
-            this.mBeamController.authenticate(mPreferencesManager.getCloudIp(), mPreferencesManager.getCloudPort(), mUsername, mPassword, this);
-
+            this.mBeamController.authenticate(mPreferencesManager.getCloudIp(),
+                    mPreferencesManager.getCloudPort(), mUsername, mPassword, this);
 
         } else {
 
@@ -171,45 +162,12 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
     @Override
     public void onAuthenticateFailed() {
 
-        //TODO
+        Toast.makeText(this, R.string.text_authentication_failed, Toast.LENGTH_SHORT).show();
     }
 
 
     private void showCloudSetupScreen() {
 
         startActivity(new Intent(this, CloudSetupActivity.class));
-
-//        if (mCloudDialog == null) {
-//            mCloudDialog = new Dialog(this, R.style.FullHeightDialog);
-//
-//            mCloudDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//            mCloudDialog.setContentView(R.layout.cloud_dialog_layout);
-//
-//            final TextInputEditText ipEditText = (TextInputEditText) mCloudDialog.findViewById(R.id.loginTextInputAddress);
-//
-//            final TextInputEditText portEditText = (TextInputEditText) mCloudDialog.findViewById(R.id.loginTextInputPort);
-//
-//            final Button saveButton = (Button) mCloudDialog.findViewById(R.id.saveButton);
-//
-//            saveButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    String ip = ipEditText.getText().toString();
-//                    if (!ip.trim().isEmpty()) {
-//                        mPreferencesManager.setCloudIp(ip);
-//                    }
-//
-//                    String port = portEditText.getText().toString();
-//                    if (!port.trim().isEmpty()) {
-//                        mPreferencesManager.setCloudPort(port);
-//                    }
-//                }
-//            });
-//        }
-//
-//        if (!mCloudDialog.isShowing()) {
-//            mCloudDialog.show();
-//        }
-
     }
 }

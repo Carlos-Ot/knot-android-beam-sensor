@@ -1,21 +1,10 @@
 package br.org.cesar.knot.beamsensor.controller;
 
-
-import org.json.JSONException;
-
 import br.org.cesar.knot.beamsensor.communication.BeamCommunication;
 import br.org.cesar.knot.beamsensor.communication.BeamCommunicationFactory;
 import br.org.cesar.knot.beamsensor.data.networking.callback.AuthenticateRequestCallback;
 import br.org.cesar.knot.beamsensor.data.networking.callback.SensorsRequestCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
-import br.org.cesar.knot.beamsensor.model.Subscriber;
-import br.org.cesar.knot.lib.exception.InvalidParametersException;
-import br.org.cesar.knot.lib.exception.KnotException;
-import br.org.cesar.knot.lib.exception.SocketNotConnected;
-
-/**
- * Created by carlos on 14/03/17.
- */
 
 public class BeamController {
     private BeamCommunication mCommunication;
@@ -41,14 +30,6 @@ public class BeamController {
 
         return sInstance;
     }
-//
-//    public void subscribe(Subscriber subscriber) {
-//        mCommunication.addListener(subscriber);
-//    }
-//
-//    public void unSubscribe(Subscriber subscriber) {
-//        mCommunication.removeListener(subscriber);
-//    }
 
     public void getSensor(BeamSensorFilter filter, SensorsRequestCallback callback) {
         mCommunication.getSensors(filter, callback);

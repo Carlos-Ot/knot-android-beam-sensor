@@ -11,7 +11,6 @@ import br.org.cesar.knot.beamsensor.data.networking.callback.AuthenticateRequest
 import br.org.cesar.knot.beamsensor.data.networking.callback.SensorsRequestCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
-import br.org.cesar.knot.beamsensor.model.Subscriber;
 import br.org.cesar.knot.lib.connection.FacadeConnection;
 import br.org.cesar.knot.lib.event.Event;
 import br.org.cesar.knot.lib.exception.InvalidParametersException;
@@ -44,6 +43,7 @@ public class WsBeamCommunication implements BeamCommunication {
             if (callback != null) {
                 callback.onAuthenticateFailed();
             }
+            return;
 
         }
 

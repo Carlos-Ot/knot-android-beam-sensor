@@ -125,27 +125,29 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
     void performLogin() {
         Log.d(TAG, "Login button pressed");
 
-        if (validateCloudInfo()) {
+//        if (validateCloudInfo()) {
+//
+//            String mUsername = mUsernameEditText.getText().toString();
+//            String mPassword = mPasswordEditText.getText().toString();
+//
+//            this.mBeamController.authenticate(mPreferencesManager.getCloudIp(),
+//                    mPreferencesManager.getCloudPort(), mUsername, mPassword, this);
+//
+//        } else {
+//
+//            //TODO show snackbar
+//            Snackbar snackbar = Snackbar.make(mRootView, "Setup cloud info", Snackbar.LENGTH_LONG);
+//            snackbar.setAction("Settings", new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    showCloudSetupScreen();
+//                }
+//            });
+//            snackbar.show();
+//        }
 
-            String mUsername = mUsernameEditText.getText().toString();
-            String mPassword = mPasswordEditText.getText().toString();
-
-            this.mBeamController.authenticate(mPreferencesManager.getCloudIp(),
-                    mPreferencesManager.getCloudPort(), mUsername, mPassword, this);
-
-        } else {
-
-            //TODO show snackbar
-            Snackbar snackbar = Snackbar.make(mRootView, "Setup cloud info", Snackbar.LENGTH_LONG);
-            snackbar.setAction("Settings", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showCloudSetupScreen();
-                }
-            });
-            snackbar.show();
-        }
-
+        //TODO remover
+        startActivity(new Intent(this, DeviceListActivity.class));
 
     }
 
@@ -156,7 +158,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
 
         startActivity(new Intent(this, DeviceListActivity.class));
         finish();
-//        this.mBeamController.getSensor(new BeamSensorFilter());
     }
 
     @Override

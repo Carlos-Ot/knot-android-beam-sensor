@@ -1,11 +1,6 @@
 package br.org.cesar.knot.beamsensor.model;
 
-
-
 import br.org.cesar.knot.lib.model.AbstractThingDevice;
-/**
- * Created by carlos on 09/03/17.
- */
 
 public class BeamSensor extends AbstractThingDevice {
     private boolean online;

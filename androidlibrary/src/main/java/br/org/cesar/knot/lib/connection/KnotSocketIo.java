@@ -728,7 +728,7 @@ final class KnotSocketIo {
                             } else {
                                 result = mGson.fromJson(EMPTY_JSON, typeThing);
                             }
-                            callbackResult.onEventFinish((List<T>) result);
+                            callbackResult.onEventFinish(result);
                         } catch (Exception e) {
                             callbackResult.onEventError(new KnotException(e));
                         }

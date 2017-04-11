@@ -93,7 +93,7 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
         mSaveButton.setOnClickListener(this);
 
         //TODO remover
-        mIpEditText.setText("10.211.55.19");
+        mIpEditText.setText("172.24.4.231");
         mPortEditText.setText("3000");
     }
 
@@ -132,7 +132,13 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
         preferencesManager.setCloudIp(mIpEditText.getText().toString());
         preferencesManager.setCloudPort(mPortEditText.getText().toString());
 
-        Toast.makeText(this, getString(R.string.text_cloud_info_saved), Toast.LENGTH_SHORT).show();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(CloudSetupActivity.this, getString(R.string.text_cloud_info_saved), Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         finish();
     }

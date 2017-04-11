@@ -1,7 +1,6 @@
 package br.org.cesar.knot.beamsensor.communication;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,22 +35,10 @@ public class WsBeamCommunication implements BeamCommunication {
     }
 
     public void authenticate(String url, int port, String user, String password, final AuthenticateRequestCallback callback) {
-        String endPoint = null;
+
         try {
-            getEndpoint(url, port);
-        }catch (URISyntaxException e) {
-
-            e.printStackTrace();
-
-            if (callback != null) {
-                callback.onAuthenticateFailed();
-            }
-            return;
-
-        }
-
-        connection.setupSocketIO(user, password);
-        try {
+            String endPoint = getEndpoint(url, port);
+            connection.setupSocketIO(user, password);
             connection.connectSocket(endPoint, new Event<Boolean>() {
                 @Override
                 public void onEventFinish(Boolean object) {
@@ -74,8 +61,8 @@ public class WsBeamCommunication implements BeamCommunication {
                     }
                 }
             });
-        } catch (SocketNotConnected socketNotConnected) {
-            socketNotConnected.printStackTrace();
+        } catch (URISyntaxException | SocketNotConnected e) {
+            e.printStackTrace();
 
             if (callback != null) {
                 callback.onAuthenticateFailed();
@@ -122,19 +109,9 @@ public class WsBeamCommunication implements BeamCommunication {
 
     public void getDevices(BeamSensorFilter filter, final DeviceListRequestCallback callback) {
 
-        JSONObject jsonObject;
-        try {
-            jsonObject = filter.getQuery();
-        } catch (JSONException e) {
-            if (callback != null) {
-                callback.onDeviceListFailed();
-            }
-            return;
-        }
-
         try {
             KnotList<BeamSensor> list = new KnotList<>(BeamSensor.class);
-            connection.socketIOGetDeviceList(list, jsonObject, new Event<List<BeamSensor>>() {
+            connection.socketIOGetDeviceList(list, filter.getQuery(), new Event<List<BeamSensor>>() {
 
                 @Override
                 public void onEventFinish(List<BeamSensor> object) {
@@ -152,7 +129,7 @@ public class WsBeamCommunication implements BeamCommunication {
                     }
                 }
             });
-        } catch (KnotException | SocketNotConnected | InvalidParametersException e) {
+        } catch (JSONException | KnotException | SocketNotConnected | InvalidParametersException e) {
             e.printStackTrace();
 
             if (callback != null) {

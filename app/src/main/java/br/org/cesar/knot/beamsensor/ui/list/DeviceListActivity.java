@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2017, CESAR.
+ * All rights reserved.
+ *
+ * This software may be modified and distributed under the terms
+ * of the BSD license. See the LICENSE file for details.
+ *
+ *
+ */
 package br.org.cesar.knot.beamsensor.ui.list;
 
 import android.support.v4.app.FragmentManager;
@@ -119,6 +128,12 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
     @Override
     public void onDeviceListFailed() {
 
-        Toast.makeText(this, R.string.text_device_list_failed, Toast.LENGTH_SHORT).show();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(DeviceListActivity.this, R.string.text_device_list_failed, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }

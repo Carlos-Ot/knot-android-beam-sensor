@@ -80,8 +80,8 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         }
 
         //TODO remover
-        mUsernameEditText.setText("calberto");
-        mPasswordEditText.setText("123456");
+        mUsernameEditText.setText("renato");
+        mPasswordEditText.setText("1234");
 
     }
 
@@ -123,31 +123,26 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
 
     @OnClick(R.id.loginButton)
     void performLogin() {
-        Log.d(TAG, "Login button pressed");
 
-//        if (validateCloudInfo()) {
-//
-//            String mUsername = mUsernameEditText.getText().toString();
-//            String mPassword = mPasswordEditText.getText().toString();
-//
-//            this.mBeamController.authenticate(mPreferencesManager.getCloudIp(),
-//                    mPreferencesManager.getCloudPort(), mUsername, mPassword, this);
-//
-//        } else {
-//
-//            //TODO show snackbar
-//            Snackbar snackbar = Snackbar.make(mRootView, "Setup cloud info", Snackbar.LENGTH_LONG);
-//            snackbar.setAction("Settings", new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    showCloudSetupScreen();
-//                }
-//            });
-//            snackbar.show();
-//        }
+        if (validateCloudInfo()) {
 
-        //TODO remover
-        startActivity(new Intent(this, DeviceListActivity.class));
+            String mUsername = mUsernameEditText.getText().toString();
+            String mPassword = mPasswordEditText.getText().toString();
+
+            this.mBeamController.authenticate(mPreferencesManager.getCloudIp(),
+                    mPreferencesManager.getCloudPort(), mUsername, mPassword, this);
+
+        } else {
+
+            Snackbar snackbar = Snackbar.make(mRootView, "Setup cloud info", Snackbar.LENGTH_LONG);
+            snackbar.setAction("Settings", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showCloudSetupScreen();
+                }
+            });
+            snackbar.show();
+        }
 
     }
 
@@ -157,13 +152,17 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         mPreferencesManager.setUsername(mUsernameEditText.getText().toString());
 
         startActivity(new Intent(this, DeviceListActivity.class));
-        finish();
     }
 
     @Override
     public void onAuthenticateFailed() {
 
-        Toast.makeText(this, R.string.text_authentication_failed, Toast.LENGTH_SHORT).show();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(LoginActivity.this, R.string.text_authentication_failed, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

@@ -20,10 +20,10 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
 
     // List of UUIDs that have some permissions
     public List<ThingConfiguration> config;
-    private List<String> discoverWhitelist;
-    private List<String> configureWhitelist;
-    private List<String> sendWhitelist;
-    private List<String> receiveWhitelist;
+    public List<WhiteListItem> discoverWhitelist;
+    public List<WhiteListItem> configureWhitelist;
+    public List<WhiteListItem> sendWhitelist;
+    public List<WhiteListItem> receiveWhitelist;
 
     //Another device that is owner of the device
     public String owner;
@@ -46,7 +46,10 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @param uuidOfDevice Device identification
      */
     public void addNewDeviceOnDiscoverWhiteList(String uuidOfDevice) {
-        discoverWhitelist.add(uuidOfDevice);
+        WhiteListItem item = new WhiteListItem();
+        item.setRule("");
+        item.setUuid(uuidOfDevice);
+        discoverWhitelist.add(item);
     }
 
     /**
@@ -54,7 +57,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      *
      * @return List of devices that are in the DiscoverWhiteList
      */
-    public List<String> getDiscoverWhiteList() {
+    public List<WhiteListItem> getDiscoverWhiteList() {
         return discoverWhitelist;
     }
 
@@ -65,12 +68,17 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @return True if the device was removed and  False if the device wasn't removed
      */
     public boolean removeDiscoverWhiteList(String uuidOfDevice) {
-        if (discoverWhitelist.contains(uuidOfDevice)) {
-            discoverWhitelist.remove(uuidOfDevice);
-            return true;
-        } else {
-            return false;
+
+        boolean found = false;
+        for (WhiteListItem item: discoverWhitelist) {
+            if (item.getUuid().equals(uuidOfDevice)) {
+                discoverWhitelist.remove(item);
+                found = true;
+                break;
+            }
         }
+
+        return found;
     }
 
     /**
@@ -79,7 +87,10 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @param uuidOfDevice Device identification
      */
     public void addNewDeviceOnConfigureWhiteList(String uuidOfDevice) {
-        configureWhitelist.add(uuidOfDevice);
+        WhiteListItem item = new WhiteListItem();
+        item.setRule("");
+        item.setUuid(uuidOfDevice);
+        configureWhitelist.add(item);
     }
 
     /**
@@ -87,7 +98,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      *
      * @return List of devices that are in the ConfigureWhiteList
      */
-    public List<String> getConfigureWhiteList() {
+    public List<WhiteListItem> getConfigureWhiteList() {
         return configureWhitelist;
     }
 
@@ -98,12 +109,16 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @return True if the device was removed and  False if the device wasn't removed
      */
     public boolean removeConfigureWhiteList(String uuidOfDevice) {
-        if (configureWhitelist.contains(uuidOfDevice)) {
-            configureWhitelist.remove(uuidOfDevice);
-            return true;
-        } else {
-            return false;
+        boolean found = false;
+        for (WhiteListItem item: configureWhitelist) {
+            if (item.getUuid().equals(uuidOfDevice)) {
+                configureWhitelist.remove(item);
+                found = true;
+                break;
+            }
         }
+
+        return found;
     }
 
 
@@ -113,7 +128,10 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @param uuidOfDevice Device identification
      */
     public void addNewDeviceOnSendWhiteList(String uuidOfDevice) {
-        sendWhitelist.add(uuidOfDevice);
+        WhiteListItem item = new WhiteListItem();
+        item.setRule("");
+        item.setUuid(uuidOfDevice);
+        sendWhitelist.add(item);
     }
 
     /**
@@ -121,7 +139,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      *
      * @return List of devices that are in the SendWhiteList
      */
-    public List<String> getSendWhiteList() {
+    public List<WhiteListItem> getSendWhiteList() {
         return sendWhitelist;
     }
 
@@ -132,12 +150,16 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @return True if the device was removed and  False if the device wasn't removed
      */
     public boolean removeSendWhiteList(String uuidOfDevice) {
-        if (sendWhitelist.contains(uuidOfDevice)) {
-            sendWhitelist.remove(uuidOfDevice);
-            return true;
-        } else {
-            return false;
+        boolean found = false;
+        for (WhiteListItem item: sendWhitelist) {
+            if (item.getUuid().equals(uuidOfDevice)) {
+                sendWhitelist.remove(item);
+                found = true;
+                break;
+            }
         }
+
+        return found;
     }
 
     /**
@@ -146,7 +168,10 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @param uuidOfDevice Device identification
      */
     public void addNewDeviceOnReceiveWhitelist(String uuidOfDevice) {
-        receiveWhitelist.add(uuidOfDevice);
+        WhiteListItem item = new WhiteListItem();
+        item.setRule("");
+        item.setUuid(uuidOfDevice);
+        receiveWhitelist.add(item);
     }
 
     /**
@@ -154,23 +179,27 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      *
      * @return List of devices that are in the ReceiveWhiteList
      */
-    public List<String> getReceiveWhiteList() {
+    public List<WhiteListItem> getReceiveWhiteList() {
         return receiveWhitelist;
     }
 
     /**
      * Remove a device of the WhiteList
      *
-     * @param uuidOfDevice Device identification
+//     * @param uuidOfDevice Device identification
      * @return True if the device was removed and  False if the device wasn't removed
      */
     public boolean removeReceiveWhiteList(String uuidOfDevice) {
-        if (receiveWhitelist.contains(uuidOfDevice)) {
-            receiveWhitelist.remove(uuidOfDevice);
-            return true;
-        } else {
-            return false;
+        boolean found = false;
+        for (WhiteListItem item: receiveWhitelist) {
+            if (item.getUuid().equals(uuidOfDevice)) {
+                receiveWhitelist.remove(item);
+                found = true;
+                break;
+            }
         }
+
+        return found;
     }
 
 

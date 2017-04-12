@@ -13,13 +13,13 @@ import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
+import br.org.cesar.knot.beamsensor.ui.detail.SensorDetailActivity;
 import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements DeviceAdapter.ItemClickListener{
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -37,6 +37,7 @@ public class ListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         adapter = new DeviceAdapter();
+        adapter.setItemClickListener(this);
     }
 
     @Override
@@ -63,4 +64,9 @@ public class ListFragment extends Fragment {
         adapter.setData(beamSensors);
     }
 
+    @Override
+    public void onClick(BeamSensor shot) {
+
+        startActivity(SensorDetailActivity.newIntent(getContext(), shot.getToken(), shot.getUuid()));
+    }
 }

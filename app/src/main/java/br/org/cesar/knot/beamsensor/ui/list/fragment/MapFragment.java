@@ -22,9 +22,11 @@ import java.util.List;
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorItem;
+import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceAdapter;
+import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceViewHolder;
 
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements DeviceAdapter.ItemClickListener {
 
     private ArrayList<LatLng> onlineBeamSensor;
     private ArrayList<LatLng> offlineBeamSensor;
@@ -107,6 +109,11 @@ public class MapFragment extends Fragment {
                 .addAll(latlng)
                 .width(10)
                 .color(color));
+    }
+
+    @Override
+    public void onClick(BeamSensor beamSensor) {
+
     }
 
     @Override

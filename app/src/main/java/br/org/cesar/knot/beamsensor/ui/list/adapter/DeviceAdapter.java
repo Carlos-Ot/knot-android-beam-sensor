@@ -29,19 +29,22 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
     public DeviceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.beam_sensor_list_item, parent, false);
 
-
-//        shotViewHolder.itemView.setOnClickListener(v -> {
-//            final int position = shotViewHolder.getAdapterPosition();
-//            if (position != RecyclerView.NO_POSITION && mItemClickListener != null) {
-//                mItemClickListener.onClick(mShots.get(position));
-//            }
-//        });
+        final DeviceViewHolder viewHolder = new DeviceViewHolder(view);
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final int position = viewHolder.getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && mItemClickListener != null) {
+                    mItemClickListener.onClick(beamSensors.get(position));
+                }
+            }
+        });
         return new DeviceViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(DeviceViewHolder holder, int position) {
-        final BeamSensor beamSensor = beamSensors.get(position);
+        holder.bind(beamSensors.get(position));
 
     }
 
@@ -52,7 +55,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
 
 
     public interface ItemClickListener {
-        void onClick(BeamSensor shot);
+        void onClick(BeamSensor beamSensor);
     }
 
 

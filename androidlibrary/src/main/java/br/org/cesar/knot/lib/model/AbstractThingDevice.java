@@ -20,10 +20,10 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
 
     // List of UUIDs that have some permissions
     public List<ThingConfiguration> config;
-    public List<WhiteListItem> discoverWhitelist;
-    public List<WhiteListItem> configureWhitelist;
-    public List<WhiteListItem> sendWhitelist;
-    public List<WhiteListItem> receiveWhitelist;
+    public List<SecurityListItem> discoverWhitelist;
+    public List<SecurityListItem> configureWhitelist;
+    public List<SecurityListItem> sendWhitelist;
+    public List<SecurityListItem> receiveWhitelist;
 
     //Another device that is owner of the device
     public String owner;
@@ -46,7 +46,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @param uuidOfDevice Device identification
      */
     public void addNewDeviceOnDiscoverWhiteList(String uuidOfDevice) {
-        WhiteListItem item = new WhiteListItem();
+        SecurityListItem item = new SecurityListItem();
         item.setRule("");
         item.setUuid(uuidOfDevice);
         discoverWhitelist.add(item);
@@ -57,7 +57,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      *
      * @return List of devices that are in the DiscoverWhiteList
      */
-    public List<WhiteListItem> getDiscoverWhiteList() {
+    public List<SecurityListItem> getDiscoverWhiteList() {
         return discoverWhitelist;
     }
 
@@ -70,7 +70,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
     public boolean removeDiscoverWhiteList(String uuidOfDevice) {
 
         boolean found = false;
-        for (WhiteListItem item: discoverWhitelist) {
+        for (SecurityListItem item: discoverWhitelist) {
             if (item.getUuid().equals(uuidOfDevice)) {
                 discoverWhitelist.remove(item);
                 found = true;
@@ -87,7 +87,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @param uuidOfDevice Device identification
      */
     public void addNewDeviceOnConfigureWhiteList(String uuidOfDevice) {
-        WhiteListItem item = new WhiteListItem();
+        SecurityListItem item = new SecurityListItem();
         item.setRule("");
         item.setUuid(uuidOfDevice);
         configureWhitelist.add(item);
@@ -98,7 +98,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      *
      * @return List of devices that are in the ConfigureWhiteList
      */
-    public List<WhiteListItem> getConfigureWhiteList() {
+    public List<SecurityListItem> getConfigureWhiteList() {
         return configureWhitelist;
     }
 
@@ -110,7 +110,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      */
     public boolean removeConfigureWhiteList(String uuidOfDevice) {
         boolean found = false;
-        for (WhiteListItem item: configureWhitelist) {
+        for (SecurityListItem item: configureWhitelist) {
             if (item.getUuid().equals(uuidOfDevice)) {
                 configureWhitelist.remove(item);
                 found = true;
@@ -128,7 +128,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @param uuidOfDevice Device identification
      */
     public void addNewDeviceOnSendWhiteList(String uuidOfDevice) {
-        WhiteListItem item = new WhiteListItem();
+        SecurityListItem item = new SecurityListItem();
         item.setRule("");
         item.setUuid(uuidOfDevice);
         sendWhitelist.add(item);
@@ -139,7 +139,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      *
      * @return List of devices that are in the SendWhiteList
      */
-    public List<WhiteListItem> getSendWhiteList() {
+    public List<SecurityListItem> getSendWhiteList() {
         return sendWhitelist;
     }
 
@@ -151,7 +151,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      */
     public boolean removeSendWhiteList(String uuidOfDevice) {
         boolean found = false;
-        for (WhiteListItem item: sendWhitelist) {
+        for (SecurityListItem item: sendWhitelist) {
             if (item.getUuid().equals(uuidOfDevice)) {
                 sendWhitelist.remove(item);
                 found = true;
@@ -168,7 +168,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      * @param uuidOfDevice Device identification
      */
     public void addNewDeviceOnReceiveWhitelist(String uuidOfDevice) {
-        WhiteListItem item = new WhiteListItem();
+        SecurityListItem item = new SecurityListItem();
         item.setRule("");
         item.setUuid(uuidOfDevice);
         receiveWhitelist.add(item);
@@ -179,7 +179,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      *
      * @return List of devices that are in the ReceiveWhiteList
      */
-    public List<WhiteListItem> getReceiveWhiteList() {
+    public List<SecurityListItem> getReceiveWhiteList() {
         return receiveWhitelist;
     }
 
@@ -191,7 +191,7 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
      */
     public boolean removeReceiveWhiteList(String uuidOfDevice) {
         boolean found = false;
-        for (WhiteListItem item: receiveWhitelist) {
+        for (SecurityListItem item: receiveWhitelist) {
             if (item.getUuid().equals(uuidOfDevice)) {
                 receiveWhitelist.remove(item);
                 found = true;

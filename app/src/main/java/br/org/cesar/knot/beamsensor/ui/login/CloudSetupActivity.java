@@ -93,7 +93,7 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
         mSaveButton.setOnClickListener(this);
 
         //TODO remover
-        mIpEditText.setText("172.24.4.231");
+        mIpEditText.setText("10.211.55.19");
         mPortEditText.setText("3000");
     }
 

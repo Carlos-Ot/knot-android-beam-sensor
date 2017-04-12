@@ -14,7 +14,7 @@ package br.org.cesar.knot.lib.model;
  * Created by ragpf on 11/04/17.
  */
 
-public class WhiteListItem {
+public class SecurityListItem {
 
     public String uuid;
     public String rule;

@@ -15,9 +15,15 @@ public class BeamSensor extends AbstractThingDevice {
     private boolean online;
     private String id;
     private String ipAddress;
-    private BeamSensorItem leftEmitter;
-    private BeamSensorItem centerReceiver;
-    private BeamSensorItem rightEmitter;
+    private BeamSensorItem leftFence;
+    private BeamSensorItem controller;
+    private BeamSensorItem rightFence;
+
+    public BeamSensor(){
+        leftFence = new BeamSensorItem();
+        controller = new BeamSensorItem();
+        rightFence = new BeamSensorItem();
+    }
 
     public Boolean getOnline() {
         return online;
@@ -47,44 +53,49 @@ public class BeamSensor extends AbstractThingDevice {
         return online;
     }
 
-    public BeamSensorItem getCenterReceiver() {
-        return centerReceiver;
+    public BeamSensorItem getController() {
+        return controller;
     }
 
-    public void setCenterReceiver(BeamSensorItem centerReceiver) {
-        this.centerReceiver = centerReceiver;
+    public void setController(BeamSensorItem controller) {
+        this.controller = controller;
     }
 
-    public BeamSensorItem getRightEmitter() {
-        return rightEmitter;
+    public BeamSensorItem getRightFence() {
+        return rightFence;
     }
 
-    public void setRightEmitter(BeamSensorItem rightEmitter) {
-        this.rightEmitter = rightEmitter;
+    public void setRightFence(BeamSensorItem rightFence) {
+        this.rightFence = rightFence;
     }
 
-    public BeamSensorItem getLeftEmitter() {
-        return leftEmitter;
+    public BeamSensorItem getLeftFence() {
+        return leftFence;
     }
 
-    public void setLeftEmitter(BeamSensorItem leftEmitter) {
-        this.leftEmitter = leftEmitter;
+    public void setLeftFence(BeamSensorItem leftFence) {
+        this.leftFence = leftFence;
     }
 
-    public ArrayList<LatLng> getLatLngFromSensors() {
-        ArrayList<LatLng> latLngList = new ArrayList<>();
-        latLngList.add(leftEmitter.getLatLng());
-        latLngList.add(centerReceiver.getLatLng());
-        latLngList.add(rightEmitter.getLatLng());
-        return latLngList;
-    }
+//    public ArrayList<LatLng> getLatLngFromSensors() {
+//        ArrayList<LatLng> latLngList = new ArrayList<>();
+//        latLngList.add(leftFence.getLatLng());
+//        latLngList.add(controller.getLatLng());
+//        latLngList.add(rightFence.getLatLng());
+//        return latLngList;
+//    }
 
     public ArrayList<BeamSensorItem> getBeamSensorItens() {
 
         ArrayList<BeamSensorItem> beamSensorItemArrayList = new ArrayList<>();
-        beamSensorItemArrayList.add(leftEmitter);
-        beamSensorItemArrayList.add(centerReceiver);
-        beamSensorItemArrayList.add(rightEmitter);
+
+        if(controller == null)
+            return beamSensorItemArrayList;
+
+        beamSensorItemArrayList.add(leftFence);
+        beamSensorItemArrayList.add(controller);
+        beamSensorItemArrayList.add(rightFence);
+
         return beamSensorItemArrayList;
     }
 

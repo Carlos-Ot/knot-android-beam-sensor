@@ -40,7 +40,7 @@ public class FacadeConnection {
     private KnotSocketIo mSocketIO;
     private ThingApi mThingApi;
 
-    private FacadeConnection() {
+    public FacadeConnection() {
     }
 
     /**

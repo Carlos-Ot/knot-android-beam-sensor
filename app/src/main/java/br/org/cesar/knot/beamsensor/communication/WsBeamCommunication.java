@@ -142,7 +142,7 @@ public class WsBeamCommunication implements BeamCommunication {
     public void getData(KnotQueryData filter, String uuid, String token, final BeamSensorDataCallback callback) {
         KnotList<BeamSensorData> list = new KnotList<>(BeamSensorData.class);
         try {
-            connection.socketIOGetData(list, uuid, token, filter, new Event<List<BeamSensorData>>() {
+            connection.socketIOGetData(list, "f04cf0fa-8872-4b7f-bf5c-62b463000000", null, filter, new Event<List<BeamSensorData>>() {
                 @Override
                 public void onEventFinish(List<BeamSensorData> object) {
                     if (callback != null) {

@@ -12,6 +12,7 @@ import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.controller.BeamController;
 import br.org.cesar.knot.beamsensor.data.networking.callback.BeamSensorDataCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensorData;
+import br.org.cesar.knot.lib.model.KnotQueryData;
 
 public class SensorDetailActivity extends AppCompatActivity implements BeamSensorDataCallback {
 
@@ -34,7 +35,9 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_detail);
 
-        beamController.getData(null, getIntent().getStringExtra(EXTRA_UUID), getIntent().getStringExtra(EXTRA_TOKEN), this);
+        KnotQueryData filter = new KnotQueryData();
+        filter.setLimit(20);
+        beamController.getData(filter, getIntent().getStringExtra(EXTRA_UUID), this);
 
     }
 

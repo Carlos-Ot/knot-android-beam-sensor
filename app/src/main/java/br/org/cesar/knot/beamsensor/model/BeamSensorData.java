@@ -1,22 +1,38 @@
 package br.org.cesar.knot.beamsensor.model;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
-
 import br.org.cesar.knot.lib.model.AbstractThingData;
 
 public class BeamSensorData extends AbstractThingData {
 
-    @SerializedName("data")
-    private List<JsonObject> items;
+    @SerializedName("sensor_id")
+    private String id;
 
-    public BeamSensorData(List<JsonObject> items) {
-        this.items = items;
+    private String value;
+
+    private String uuid;
+
+    public String getId() {
+        return id;
     }
 
-    public List<JsonObject> getItems() {
-        return items;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

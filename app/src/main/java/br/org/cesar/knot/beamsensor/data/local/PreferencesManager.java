@@ -8,7 +8,7 @@ import br.org.cesar.knot.beamsensor.util.Constants;
 
 public class PreferencesManager {
 
-    private static PreferencesManager sInstance;
+    private static volatile PreferencesManager sInstance;
 
     private SharedPreferences mSharedPreferences;
 
@@ -21,10 +21,12 @@ public class PreferencesManager {
 
     }
 
-    public static PreferencesManager getInstance() {
 
+    public static PreferencesManager getInstance() {
         if (sInstance == null) {
-            sInstance = new PreferencesManager();
+            synchronized (PreferencesManager.class) {
+                if (sInstance == null) sInstance = new PreferencesManager();
+            }
         }
 
         return sInstance;

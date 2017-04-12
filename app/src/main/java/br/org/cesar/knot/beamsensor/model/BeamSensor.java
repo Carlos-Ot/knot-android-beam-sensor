@@ -1,14 +1,23 @@
 package br.org.cesar.knot.beamsensor.model;
 
+
+
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+
 import br.org.cesar.knot.lib.model.AbstractThingDevice;
+/**
+ * Created by carlos on 09/03/17.
+ */
 
 public class BeamSensor extends AbstractThingDevice {
     private boolean online;
     private String id;
     private String ipAddress;
-    private BeamSensorItem receiver;
-    private BeamSensorItem rightEmitter;
     private BeamSensorItem leftEmitter;
+    private BeamSensorItem centerReceiver;
+    private BeamSensorItem rightEmitter;
 
     public Boolean getOnline() {
         return online;
@@ -34,12 +43,16 @@ public class BeamSensor extends AbstractThingDevice {
         this.ipAddress = ipAddress;
     }
 
-    public BeamSensorItem getReceiver() {
-        return receiver;
+    public boolean isOnline() {
+        return online;
     }
 
-    public void setReceiver(BeamSensorItem receiver) {
-        this.receiver = receiver;
+    public BeamSensorItem getCenterReceiver() {
+        return centerReceiver;
+    }
+
+    public void setCenterReceiver(BeamSensorItem centerReceiver) {
+        this.centerReceiver = centerReceiver;
     }
 
     public BeamSensorItem getRightEmitter() {
@@ -57,4 +70,22 @@ public class BeamSensor extends AbstractThingDevice {
     public void setLeftEmitter(BeamSensorItem leftEmitter) {
         this.leftEmitter = leftEmitter;
     }
+
+    public ArrayList<LatLng> getLatLngFromSensors() {
+        ArrayList<LatLng> latLngList = new ArrayList<>();
+        latLngList.add(leftEmitter.getLatLng());
+        latLngList.add(centerReceiver.getLatLng());
+        latLngList.add(rightEmitter.getLatLng());
+        return latLngList;
+    }
+
+    public ArrayList<BeamSensorItem> getBeamSensorItens() {
+
+        ArrayList<BeamSensorItem> beamSensorItemArrayList = new ArrayList<>();
+        beamSensorItemArrayList.add(leftEmitter);
+        beamSensorItemArrayList.add(centerReceiver);
+        beamSensorItemArrayList.add(rightEmitter);
+        return beamSensorItemArrayList;
+    }
+
 }

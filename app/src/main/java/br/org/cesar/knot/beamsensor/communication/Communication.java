@@ -7,14 +7,10 @@ import br.org.cesar.knot.lib.event.Event;
 import br.org.cesar.knot.lib.exception.InvalidParametersException;
 import br.org.cesar.knot.lib.exception.SocketNotConnected;
 
-/**
- * Created by usuario on 03/04/17.
- */
 
 public class Communication {
 
-    private static final Object lock = new Object();
-    private static Communication sInstance;
+    private static volatile Communication sInstance;
     private FacadeConnection mKnotConnection;
     private OpenConnectionListener mListener;
 
@@ -62,12 +58,13 @@ public class Communication {
      * @return the instance
      */
     public static Communication getInstance() {
-        synchronized (lock) {
-            if (sInstance == null) {
-                sInstance = new Communication();
+        if (sInstance == null) {
+            synchronized (Communication.class) {
+                if (sInstance == null) sInstance = new Communication();
             }
-            return sInstance;
         }
+
+        return sInstance;
     }
 
     private Communication() {

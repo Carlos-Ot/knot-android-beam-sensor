@@ -1,5 +1,5 @@
-
-.DS_Store
+# Created by https://www.gitignore.io/api/android
+# SmartSchool Android
 
 ### Android ###
 # Built application files
@@ -20,7 +20,6 @@ out/
 # Gradle files
 .gradle/
 build/
-gradle.properties
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -39,14 +38,7 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/libraries
-.idea/misc.xml
-
-# Keystore files
-*.jks
+.idea/*
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
@@ -54,10 +46,19 @@ captures/
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
-# Freeline
-freeline.py
-freeline/
-freeline_project_description.json
 
 ### Android Patch ###
 gen-external-apklibs
+
+# Mac clutter
+*.DS_Store
+*/*/.DS_Store
+app/.DS_Store
+app/src/.DS_Store
+app/src/main/.DS_Store
+
+# Fabric related files
+session_analytics.tap
+com.crashlytics.settings.json
+
+# End of https://www.gitignore.io/api/android

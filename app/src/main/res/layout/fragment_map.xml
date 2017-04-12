@@ -1,13 +1,6 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<fragment
+    android:id="@+id/map"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.org.cesar.knot.beamsensor.ui.list.fragment.MapFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment_1" />
-
-</FrameLayout>
+    class="com.google.android.gms.maps.SupportMapFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"/>

@@ -1,7 +1,10 @@
 package br.org.cesar.knot.beamsensor.ui.list.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,42 +13,54 @@ import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
+import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceAdapter;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ListFragment extends Fragment {
 
-    public ListFragment() {
-        // Required empty public constructor
-    }
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
+    private DeviceAdapter adapter;
+    public List<BeamSensor> beamSensors;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment ListFragment.
-     */
+
     public static ListFragment newInstance() {
         return new ListFragment();
     }
 
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        adapter = new DeviceAdapter();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        ButterKnife.bind(this, view);
+
+        initRecyclerView();
+        if (beamSensors != null && !beamSensors.isEmpty()) {
+            updateDeviceList();
+        }
+
+        return view;
     }
 
-    public void updateDeviceList(List<BeamSensor> devices) {
-
+    private void initRecyclerView() {
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(adapter);
     }
+
+    public void updateDeviceList() {
+        adapter.setData(beamSensors);
+    }
+
 }

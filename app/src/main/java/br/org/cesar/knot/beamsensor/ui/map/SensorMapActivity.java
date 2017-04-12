@@ -51,21 +51,21 @@ public class SensorMapActivity extends AppCompatActivity implements OnMapReadyCa
 //
 //        a.setId("123123");
 //        a.setOnline(true);
-//        a.setCenterReceiver(new BeamSensorItem(-8.058344, -34.872363, 1));
-//        a.setLeftEmitter(new BeamSensorItem(-8.058952, -34.872441, 0));
-//        a.setRightEmitter(new BeamSensorItem(-8.058450, -34.871687, 1));
+//        a.setController(new BeamSensorItem(-8.058344, -34.872363, 1));
+//        a.setLeftFence(new BeamSensorItem(-8.058952, -34.872441, 0));
+//        a.setRightFence(new BeamSensorItem(-8.058450, -34.871687, 1));
 //
 //        b.setId("123123");
 //        b.setOnline(true);
-//        b.setCenterReceiver(new BeamSensorItem(-8.058631, -34.870872, 1));
-//        b.setLeftEmitter(new BeamSensorItem(-8.059156, -34.870898, 1));
-//        b.setRightEmitter(new BeamSensorItem(-8.058455, -34.871489, 0));
+//        b.setController(new BeamSensorItem(-8.058631, -34.870872, 1));
+//        b.setLeftFence(new BeamSensorItem(-8.059156, -34.870898, 1));
+//        b.setRightFence(new BeamSensorItem(-8.058455, -34.871489, 0));
 //
 //        c.setId("123123");
 //        c.setOnline(true);
-//        c.setCenterReceiver(new BeamSensorItem(-8.059151, -34.871682, 1));
-//        c.setLeftEmitter(new BeamSensorItem(-8.058986, -34.872400, 1));
-//        c.setRightEmitter(new BeamSensorItem(-8.059332, -34.870984, 0));
+//        c.setController(new BeamSensorItem(-8.059151, -34.871682, 1));
+//        c.setLeftFence(new BeamSensorItem(-8.058986, -34.872400, 1));
+//        c.setRightFence(new BeamSensorItem(-8.059332, -34.870984, 0));
 //
 //
 //        ArrayList<BeamSensor> beamSensorArrayList = new ArrayList<>();
@@ -97,7 +97,7 @@ public class SensorMapActivity extends AppCompatActivity implements OnMapReadyCa
 //        googleMap.addMarker(new MarkerOptions().position(tr).title("Top right"));
 //        googleMap.addMarker(new MarkerOptions().position(tl).title("Top left"));
 
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(a.getCenterReceiver().getLatLng(), 15));
+//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(a.getController().getLatLng(), 15));
 
     }
 

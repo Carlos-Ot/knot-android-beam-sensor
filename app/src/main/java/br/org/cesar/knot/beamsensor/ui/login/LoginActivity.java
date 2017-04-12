@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         }
 
         //TODO remover
-        mUsernameEditText.setText("renato");
+        mUsernameEditText.setText("user");
         mPasswordEditText.setText("1234");
 
     }

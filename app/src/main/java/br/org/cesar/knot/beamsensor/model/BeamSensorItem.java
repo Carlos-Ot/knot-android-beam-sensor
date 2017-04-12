@@ -12,6 +12,7 @@ package br.org.cesar.knot.beamsensor.model;
 import com.google.android.gms.maps.model.LatLng;
 
 public class BeamSensorItem {
+    private int id;
     private double latitude;
     private double longitude;
     private int status;
@@ -39,9 +40,4 @@ public class BeamSensorItem {
     public void setStatus(int status) {
         this.status = status;
     }
-
-    public LatLng getLatLng() {
-        return new LatLng(getLatitude(), getLongitude());
-    }
-
 }

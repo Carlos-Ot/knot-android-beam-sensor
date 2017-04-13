@@ -10,11 +10,14 @@
     <string name="text_authentication_failed">Authentication failed!</string>
     <string name="text_cloud_info_saved">Cloud info successfully saved!</string>
 
+    <string name="text_beam_sensor_data_failed">Beam Sensor data failed!</string>
+
     <string name="text_device_list_failed">Device list could not be loaded!</string>
 
     <string name="title_login">Login</string>
     <string name="title_setup">Setup Cloud</string>
     <string name="title_device">Devices</string>
+    <string name="title_data">Data</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment_1">Hello blank 1111 fragment</string>

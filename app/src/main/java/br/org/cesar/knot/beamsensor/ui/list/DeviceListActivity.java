@@ -57,11 +57,9 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
         setContentView(R.layout.activity_device_list);
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
         mToolbar.setTitle(R.string.title_device);
+        setSupportActionBar(mToolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         fragmentManager = getSupportFragmentManager();
 
@@ -71,7 +69,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
         updateFragmentState();
 
 
-        BeamController.getInstance().getBeamDevices(new BeamSensorFilter(), this);
+//        BeamController.getInstance().getBeamDevices(new BeamSensorFilter(), this);
 
         // TODO: 11/04/17 remove comments
         //start block of fake response
@@ -102,13 +100,13 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 //        beamSensorArrayList.add(a);
 //        beamSensorArrayList.add(b);
 //        beamSensorArrayList.add(c);
-//        final ArrayList<BeamSensor> teste = beamSensorArrayList;
+//        final ArrayList<BeamSensor> ic_sensor_active = beamSensorArrayList;
 //
 //        Handler handler = new Handler();
 //        handler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-//                onDeviceListsSuccess(teste);
+//                onDeviceListsSuccess(ic_sensor_active);
 //            }
 //        }, 2000);
 
@@ -129,9 +127,10 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
         if (item.getItemId() == android.R.id.home) {
             finish();
-        } else {
+        } else if(item.getItemId() == R.id.list_map_menu) {
             this.isShowingMap = !this.isShowingMap;
             updateFragmentState();
+
         }
 
         return true;
@@ -172,22 +171,22 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
                 if (deviceList != null && !deviceList.isEmpty()) {
                     mapFragment.beamSensors = deviceList;
                     mapFragment.updateDeviceList();
-                    listFragment.beamSensors = new ArrayList<>();
-                    for (BeamSensor bs :
-                            deviceList
-                            ) {
-                        if (bs.isBeamSensorOwner()) {
-//                            BeamSensorOwner beamSensorOwner = bs.getBeamSensorOwner();
-//                            String ownerUuid = beamSensorOwner.getUuid();
-//                            String ownerToken = beamSensorOwner.getToken();
-//                            if (BeamController.getInstance().authenticate(ownerUuid, ownerToken)) {
-//                                Log.d("Http", "Http Success Authentication");
-//                            }
-                        }
-                        else{
-                            listFragment.beamSensors.add(bs);
-                        }
-                    }
+//                    listFragment.beamSensors = new ArrayList<>();
+//                    for (BeamSensor bs :
+//                            deviceList
+//                            ) {
+//                        if (bs.isBeamSensorOwner()) {
+////                            BeamSensorOwner beamSensorOwner = bs.getBeamSensorOwner();
+////                            String ownerUuid = beamSensorOwner.getUuid();
+////                            String ownerToken = beamSensorOwner.getToken();
+////                            if (BeamController.getInstance().authenticate(ownerUuid, ownerToken)) {
+////                                Log.d("Http", "Http Success Authentication");
+////                            }
+//                        }
+//                        else{
+//                            listFragment.beamSensors.add(bs);
+//                        }
+//                    }
 
                 }
             }

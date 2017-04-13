@@ -1,6 +1,6 @@
 package br.org.cesar.knot.beamsensor.ui.login;
 
-import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import br.org.cesar.knot.beamsensor.R;
@@ -21,17 +22,18 @@ import butterknife.ButterKnife;
 
 public class CloudSetupActivity extends AppCompatActivity implements View.OnClickListener{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.setupRoot)
-    View mRootView;
-    @BindView(R.id.loginTextInputAddress)
-    TextInputEditText mIpEditText;
-    @BindView(R.id.loginTextInputPort)
-    TextInputEditText mPortEditText;
-    @BindView(R.id.saveButton)
-    Button mSaveButton;
 
+    @BindView(R.id.ip_et)
+    EditText edtIp;
+
+    @BindView(R.id.port_et)
+    EditText edtPort;
+
+    @BindView(R.id.btn_save)
+    Button btnSave;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private TextWatcher mCloudEmptyWatcher = new TextWatcher() {
         @Override
@@ -58,15 +60,15 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
         ButterKnife.bind(this);
 
         //toolbar
-        setSupportActionBar(mToolbar);
-        mToolbar.setTitle(R.string.title_setup);
+        toolbar.setTitle(R.string.activity_cloud_setup_title);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mPortEditText.addTextChangedListener(mCloudEmptyWatcher);
-        mPortEditText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        edtIp.addTextChangedListener(mCloudEmptyWatcher);
+        edtPort.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
 
-        mIpEditText.addTextChangedListener(mCloudEmptyWatcher);
+        edtIp.addTextChangedListener(mCloudEmptyWatcher);
 
         filters[0] = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -88,13 +90,13 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
             }
         };
 
-        mIpEditText.setFilters(filters);
+        edtIp.setFilters(filters);
 
-        mSaveButton.setOnClickListener(this);
+        btnSave.setOnClickListener(this);
 
         //TODO remover
-        mIpEditText.setText("10.211.55.19");
-        mPortEditText.setText("3000");
+        edtIp.setText("172.24.4.231");
+        edtPort.setText("3000");
     }
 
     @Override
@@ -111,8 +113,8 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
 
     private void checkFieldsForEmptyValues() {
 
-        if (!mIpEditText.getText().toString().isEmpty()
-                && !mPortEditText.getText().toString().isEmpty()) {
+        if (!edtIp.getText().toString().isEmpty()
+                && !edtPort.getText().toString().isEmpty()) {
             enableSaveButton(true);
         } else {
             enableSaveButton(false);
@@ -120,7 +122,15 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void enableSaveButton(boolean enable) {
-        mSaveButton.setEnabled(enable);
+        btnSave.setEnabled(enable);
+        if(enable) {
+            btnSave.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
+            btnSave.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+        } else {
+            btnSave.setBackgroundColor(ContextCompat.getColor(this, R.color.material_blue_grey_400));
+            btnSave.setTextColor(ContextCompat.getColor(this, R.color.material_blue_grey_500));
+        }
+
     }
 
 
@@ -129,17 +139,10 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
 
         PreferencesManager preferencesManager = PreferencesManager.getInstance();
 
-        preferencesManager.setCloudIp(mIpEditText.getText().toString());
-        preferencesManager.setCloudPort(mPortEditText.getText().toString());
+        preferencesManager.setCloudIp(edtIp.getText().toString());
+        preferencesManager.setCloudPort(edtPort.getText().toString());
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(CloudSetupActivity.this, getString(R.string.text_cloud_info_saved), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
+        Toast.makeText(CloudSetupActivity.this, getString(R.string.text_cloud_info_saved), Toast.LENGTH_SHORT).show();
         finish();
     }
 }

@@ -1,17 +1,10 @@
 <resources>
     <string name="app_name">BeamSensor</string>
     <string name="hint_cloud_ip">Cloud IP</string>
-    <string name="hint_port">Port</string>
-    <string name="hint_username">Username</string>
-    <string name="hint_password">Password</string>
-    <string name="text_login">Login</string>
-    <string name="text_save">Save</string>
 
-    <string name="text_authentication_failed">Authentication failed!</string>
-    <string name="text_cloud_info_saved">Cloud info successfully saved!</string>
+
 
     <string name="text_beam_sensor_data_failed">Beam Sensor data failed!</string>
-
     <string name="text_device_list_failed">Device list could not be loaded!</string>
 
     <string name="title_login">Login</string>
@@ -19,8 +12,33 @@
     <string name="title_device">Devices</string>
     <string name="title_data">Data</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment_1">Hello blank 1111 fragment</string>
-    <string name="hello_blank_fragment_2">Hello blank 2222 fragment</string>
+    <!-- Login Activity -->
+    <string name="activity_login_title">Login</string>
+    <string name="activity_login_button_sign_in">Sign in</string>
+    <string name="activity_login_hint_email">Email</string>
+    <string name="activity_login_hint_password">Password</string>
+    <string name="activity_login_email_error">Invalid email</string>
+    <string name="activity_login_password_error">Invalid password</string>
+    <string name="text_authentication_failed">Authentication failed!</string>
+
+
+
+
+    <!-- Cloud Setup Activity -->
+    <string name="activity_cloud_setup_title">Cloud Settings</string>
+    <string name="activity_cloud_hint_ip">Could IP</string>
+    <string name="activity_cloud_hint_port">Port</string>
+    <string name="activity_cloud_setup_save">Save</string>
+    <string name="activity_login_ip_error">Invalid email</string>
+    <string name="activity_login_port_error">Invalid port</string>
+    <string name="text_cloud_info_saved">Cloud info successfully saved!</string>
+
+    <!-- DeviceViewHolder -->
+    <string name="device_view_holder_active">Active</string>
+    <string name="device_view_holder_inactive">Inactive</string>
+
+
+
+
 
 </resources>

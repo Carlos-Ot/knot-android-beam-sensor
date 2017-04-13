@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -23,15 +25,17 @@ import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorItem;
 import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceAdapter;
-import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceViewHolder;
+import br.org.cesar.knot.beamsensor.util.Utils;
 
 
 public class MapFragment extends Fragment implements DeviceAdapter.ItemClickListener {
 
-    private ArrayList<LatLng> onlineBeamSensor;
-    private ArrayList<LatLng> offlineBeamSensor;
+    private ArrayList<LatLng> activeFence;
+    private ArrayList<LatLng> inactiveFence;
+    private ArrayList<LatLng> violatedFence;
     private GoogleMap googleMap;
     public List<BeamSensor> beamSensors;
+    LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
 
     public static MapFragment newInstance() {
@@ -41,8 +45,9 @@ public class MapFragment extends Fragment implements DeviceAdapter.ItemClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        onlineBeamSensor = new ArrayList<>();
-        offlineBeamSensor = new ArrayList<>();
+        activeFence = new ArrayList<>();
+        inactiveFence = new ArrayList<>();
+        violatedFence = new ArrayList<>();
     }
 
     @Override
@@ -67,51 +72,68 @@ public class MapFragment extends Fragment implements DeviceAdapter.ItemClickList
         return view;
     }
 
-    private LatLng getGoogleMapCoordinate(double latitude,double longitude){
-        return new LatLng(latitude,longitude);
+    private LatLng getGoogleMapCoordinate(double latitude, double longitude) {
+        return new LatLng(latitude, longitude);
     }
 
     public void updateDeviceList() {
 
         //only populate map if googleMap is running
-        if(googleMap == null) return;
-
+        if (googleMap == null) return;
 
         for (BeamSensor beamSensor : beamSensors) {
-            if (!beamSensor.isBeamSensorOwner()) {
-                onlineBeamSensor.clear();
-                offlineBeamSensor.clear();
+            if (!beamSensor.isBeamSensorOwner() && beamSensor.isOnline()) {
+                activeFence.clear();
+                inactiveFence.clear();
+                for (BeamSensorItem beamSensorItem : beamSensor.getBeamSensorItens())
+                    if (beamSensorItem.getStatus() == 1) {
+                        activeFence.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(), beamSensorItem.getLongitude()));
+                    } else {
+                        inactiveFence.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(), beamSensorItem.getLongitude()));
+                    }
+                //add controller
+                activeFence.add(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor
+                        .getController().getLongitude()));
 
-                if (beamSensor.isOnline()) {
-                    for (BeamSensorItem beamSensorItem : beamSensor.getBeamSensorItens())
-                        if (beamSensorItem.getStatus() == 1) {
-                            onlineBeamSensor.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(), beamSensorItem.getLongitude()));
-                        } else {
-                            offlineBeamSensor.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(), beamSensorItem.getLongitude()));
-                        }
-                    onlineBeamSensor.add(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor.getController().getLatitude()));
+                builder.include(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor
+                        .getController().getLongitude()));
 
 
-                } else {
+                googleMap.addMarker(new MarkerOptions().icon(Utils.vectorToBitmap(R.drawable
+                        .ic_sensor_active, getResources()))
+                        .position(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor
+                                .getController().getLongitude())).title("Beam " +
+                        "sensor active"));
 
-                    // TODO: 10/04/17 beamSensor not online
 
+            } else if (!beamSensor.isBeamSensorOwner() && !beamSensor.isOnline()) {
+                for (BeamSensorItem beamSensorItem : beamSensor.getBeamSensorItens()) {
+                    violatedFence.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(), beamSensorItem.getLongitude()));
                 }
-                googleMap.addMarker(new MarkerOptions().position(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor.getController().getLatitude())).title("Beam " +
-                        "sensor"));
+                violatedFence.add(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor
+                        .getController().getLongitude()));
 
-                createPolyline(onlineBeamSensor, Color.BLUE);
-                createPolyline(offlineBeamSensor, Color.RED);
+                builder.include(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor
+                        .getController().getLongitude()));
+
+
+                googleMap.addMarker(new MarkerOptions().icon(Utils.vectorToBitmap(R.drawable.ic_sensor_inactive, getResources()))
+                        .position(getGoogleMapCoordinate(beamSensor.getController()
+                        .getLatitude(), beamSensor.getController().getLongitude())).title("Beam " +
+                        "sensor inactive"));
+
             }
+
+
+            createPolyline(activeFence, Color.BLUE);
+            createPolyline(violatedFence, Color.RED);
+            createPolyline(inactiveFence, Color.GRAY);
         }
 
-        for (BeamSensor beamSensor : beamSensors) {
-            if (!beamSensor.isBeamSensorOwner()) {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor.getController().getLatitude()), 15));
-                break;
-            }
-        }
-
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int padding = (int) (width * 0.20);
+        CameraUpdate camera = CameraUpdateFactory.newLatLngBounds(builder.build(), padding);
+        googleMap.animateCamera(camera);
 
     }
 

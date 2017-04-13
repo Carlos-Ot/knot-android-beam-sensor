@@ -36,8 +36,8 @@ public class ListFragment extends Fragment implements DeviceAdapter.ItemClickLis
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        adapter = new DeviceAdapter();
-        adapter.setItemClickListener(this);
+//        adapter = new DeviceAdapter();
+//        adapter.setItemClickListener(this);
     }
 
     @Override
@@ -57,11 +57,11 @@ public class ListFragment extends Fragment implements DeviceAdapter.ItemClickLis
     private void initRecyclerView() {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(adapter);
+//        recyclerView.setAdapter(adapter);
     }
 
     public void updateDeviceList() {
-        adapter.setData(beamSensors);
+//        adapter.setData(beamSensors);
     }
 
     @Override

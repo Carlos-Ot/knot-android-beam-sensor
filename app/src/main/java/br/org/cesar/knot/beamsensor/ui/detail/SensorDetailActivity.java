@@ -47,8 +47,8 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
         setContentView(R.layout.activity_sensor_detail);
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
         mToolbar.setTitle(R.string.title_device);
+        setSupportActionBar(mToolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

@@ -9,7 +9,6 @@
  */
 package br.org.cesar.knot.beamsensor.model;
 
-import com.google.android.gms.maps.model.LatLng;
 
 public class BeamSensorItem {
     private int id;

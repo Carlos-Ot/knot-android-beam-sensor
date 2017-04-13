@@ -1,7 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorAccent1">#32ff4081</color>
+    <color name="blue">@color/material_indigo_500</color>
+
+    <color name="colorPrimary">@color/material_blue_grey_500</color>
+    <color name="colorPrimaryDark">@color/material_blue_grey_700</color>
+    <color name="colorAccent">@color/material_light_green_500</color>
+
+
+
+    <color name="material_grey_500">#9E9E9E</color>
+    <color name="material_grey_700">#616161</color>
+    <color name="material_blue_grey_400">#78909C</color>
+    <color name="material_blue_grey_500">#607D8B</color>
+    <color name="material_blue_grey_700">#455A64</color>
+    <color name="material_indigo_500">#3F51B5</color>
+
+    <color name="material_light_green_500">#8BC34A</color>
+
+
+
+
+    <color name="five_percent_black">#ffe6e6e6</color>
+    <color name="ten_percent_black">#1a000000</color>
+    <color name="twenty_percent_black">#33000000</color>
+    <color name="fifteen_percent_black">#26000000</color>
+    <color name="forty_percent_black">#66000000</color>
+    <color name="fifty_percent_black">#8c000000</color>
+    <color name="seventy_percent_black">#b3000000</color>
+    <color name="eighty_percent_black">#cc000000</color>
+    <color name="eighty_five_percent_black">#d9000000</color>
+
+
+    <color name="expanded_info_secondary_text_color">#bcbcbc</color>
+    <color name="device_view_holder_active">#7bc242</color>
+    <color name="device_view_holder_inactive">@color/forty_percent_black</color>
+
 </resources>

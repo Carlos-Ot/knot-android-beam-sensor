@@ -3,7 +3,7 @@ package br.org.cesar.knot.beamsensor.ui.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -13,51 +13,32 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
-
-import com.scottyab.aescrypt.AESCrypt;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.controller.BeamController;
 import br.org.cesar.knot.beamsensor.data.local.PreferencesManager;
 import br.org.cesar.knot.beamsensor.data.networking.callback.AuthenticateRequestCallback;
-import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.ui.list.DeviceListActivity;
 import br.org.cesar.knot.beamsensor.util.Constants;
-import br.org.cesar.knot.beamsensor.util.Security;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity implements AuthenticateRequestCallback {
-    private static final String TAG = LoginActivity.class.getSimpleName();
+
+    @BindView(R.id.email_et)
+    EditText mUsernameEditText;
+
+    @BindView(R.id.password_et)
+    EditText mPasswordEditText;
+
+    @BindView(R.id.btn_sign_in)
+    Button btnSignIn;
 
     @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.loginRoot)
-    View mRootView;
-    @BindView(R.id.loginTextInputUsername)
-    TextInputEditText mUsernameEditText;
-    @BindView(R.id.loginTextInputPassword)
-    TextInputEditText mPasswordEditText;
-    @BindView(R.id.loginButton)
-    Button mLoginButton;
+    Toolbar toolbar;
 
     private PreferencesManager mPreferencesManager;
 
@@ -83,8 +64,8 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        setSupportActionBar(mToolbar);
-        mToolbar.setTitle(R.string.title_login);
+        toolbar.setTitle(R.string.activity_login_title);
+        setSupportActionBar(toolbar);
 
         mPreferencesManager = PreferencesManager.getInstance();
 
@@ -99,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         }
 
         //TODO remover
-        mUsernameEditText.setText("carlos");
+        mUsernameEditText.setText("renato");
         mPasswordEditText.setText("1234");
 
     }
@@ -118,7 +99,15 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
     }
 
     private void enableLoginButton(boolean enable) {
-        mLoginButton.setEnabled(enable);
+        btnSignIn.setEnabled(enable);
+        if(enable) {
+            btnSignIn.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
+            btnSignIn.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+        } else {
+            btnSignIn.setBackgroundColor(ContextCompat.getColor(this, R.color.material_blue_grey_400));
+            btnSignIn.setTextColor(ContextCompat.getColor(this, R.color.material_blue_grey_500));
+        }
+
     }
 
 
@@ -140,7 +129,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         return cloudIpOk && cloudPortOk;
     }
 
-    @OnClick(R.id.loginButton)
+    @OnClick(R.id.btn_sign_in)
     void performLogin() {
 
         if (validateCloudInfo()) {
@@ -153,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
 
         } else {
 
-            Snackbar snackbar = Snackbar.make(mRootView, "Setup cloud info", Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Setup cloud info", Snackbar.LENGTH_LONG);
             snackbar.setAction("Settings", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -175,6 +164,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
 
     @Override
     public void onAuthenticateFailed() {
+        Log.d("miguel", "lala");
 
         runOnUiThread(new Runnable() {
             @Override
@@ -186,7 +176,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
 
 
     private void showCloudSetupScreen() {
-
         startActivity(new Intent(this, CloudSetupActivity.class));
     }
 }

@@ -27,7 +27,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
 
     @Override
     public DeviceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.beam_sensor_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.beam_sensor_list_item_v2, parent, false);
 
         final DeviceViewHolder viewHolder = new DeviceViewHolder(view);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

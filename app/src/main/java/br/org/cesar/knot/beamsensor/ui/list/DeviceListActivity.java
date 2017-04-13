@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -26,8 +27,10 @@ import br.org.cesar.knot.beamsensor.controller.BeamController;
 import br.org.cesar.knot.beamsensor.data.networking.callback.DeviceListRequestCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
+import br.org.cesar.knot.beamsensor.model.BeamSensorOwner;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.ListFragment;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.MapFragment;
+import br.org.cesar.knot.beamsensor.util.Security;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -68,7 +71,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
         updateFragmentState();
 
 
-        BeamController.getInstance().getSensors(new BeamSensorFilter(), this);
+        BeamController.getInstance().getBeamDevices(new BeamSensorFilter(), this);
 
         // TODO: 11/04/17 remove comments
         //start block of fake response
@@ -173,8 +176,17 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
                     for (BeamSensor bs :
                             deviceList
                             ) {
-                        if (bs.getBeamSensorItens().size() > 0)
+                        if (bs.isBeamSensorOwner()) {
+//                            BeamSensorOwner beamSensorOwner = bs.getBeamSensorOwner();
+//                            String ownerUuid = beamSensorOwner.getUuid();
+//                            String ownerToken = beamSensorOwner.getToken();
+//                            if (BeamController.getInstance().authenticate(ownerUuid, ownerToken)) {
+//                                Log.d("Http", "Http Success Authentication");
+//                            }
+                        }
+                        else{
                             listFragment.beamSensors.add(bs);
+                        }
                     }
 
                 }

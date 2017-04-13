@@ -1,6 +1,5 @@
 package br.org.cesar.knot.beamsensor.controller;
 
-import br.org.cesar.knot.beamsensor.communication.BeamCommunication;
 import br.org.cesar.knot.beamsensor.communication.HttpBeamCommunication;
 import br.org.cesar.knot.beamsensor.communication.WsBeamCommunication;
 import br.org.cesar.knot.beamsensor.data.networking.callback.AuthenticateRequestCallback;
@@ -13,12 +12,13 @@ public class BeamController {
     private WsBeamCommunication mCommunication;
     private HttpBeamCommunication httpBeamCommunication;
     private static BeamController sInstance = new BeamController();
-
+    private static String currentServiceUrl;
+    private static int currentServicePort;
 
     private BeamController() {
         try {
             mCommunication = new WsBeamCommunication();
-            httpBeamCommunication = new HttpBeamCommunication();
+//            httpBeamCommunication = new HttpBeamCommunication();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,25 +36,34 @@ public class BeamController {
         return sInstance;
     }
 
-    public void getSensors(BeamSensorFilter filter, DeviceListRequestCallback callback) {
+    public void getBeamDevices(BeamSensorFilter filter, DeviceListRequestCallback callback) {
         mCommunication.getDevices(filter, callback);
     }
 
     public void authenticate(String url, int port, String user, String password, AuthenticateRequestCallback callback) {
-        httpBeamCommunication.authenticate(url, port, user, password);
-        httpBeamCommunication.isValidDeviceOwner();
+        currentServicePort = port;
+        currentServiceUrl = url;
         mCommunication.authenticate(url, port, user, password, callback);
     }
 
-    public void getData(KnotQueryData filter, String uuid, BeamSensorDataCallback callback) {
-        try {
-            httpBeamCommunication.getData(filter,uuid,callback);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//    public boolean authenticate(String ownerUuid, String ownerToken) {
+//        httpBeamCommunication.authenticate(currentServiceUrl, currentServicePort, ownerUuid, ownerToken);
+//        return httpBeamCommunication.isValidDeviceOwner();
+//    }
+
+    public void getData(KnotQueryData filter, String ownerUuid,String ownerToken,String uuidTargetDevice, BeamSensorDataCallback callback) {
+        mCommunication.getData(filter,ownerUuid,ownerToken,uuidTargetDevice,callback);
 
     }
 
+//    public void getData(KnotQueryData filter, String uuid, BeamSensorDataCallback callback) {
+//        try {
+//            httpBeamCommunication.getData(filter,uuid,callback);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
     /*
      BeamSensorFilter f = new BeamSensorFilter();
         ArrayList range = new ArrayList();

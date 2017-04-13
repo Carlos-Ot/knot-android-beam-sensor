@@ -22,7 +22,7 @@ import br.org.cesar.knot.lib.model.KnotQueryData;
 
 import java.lang.Boolean;
 
-public class WsBeamCommunication implements BeamCommunication {
+public class WsBeamCommunication {
 
     private static FacadeConnection connection;
     private static final String ENDPOINT_SCHEMA = "http";
@@ -71,7 +71,6 @@ public class WsBeamCommunication implements BeamCommunication {
 
     }
 
-    @Override
     public boolean close() {
         connection.disconnectSocket();
         return connection.isSocketConnected();
@@ -139,10 +138,10 @@ public class WsBeamCommunication implements BeamCommunication {
     }
 
 
-    public void getData(KnotQueryData filter, String uuid, String token, final BeamSensorDataCallback callback) {
+    public void getData(KnotQueryData filter, String ownerUuid, String ownerToken,String uuidTargetDevice, final BeamSensorDataCallback callback) {
         KnotList<BeamSensorData> list = new KnotList<>(BeamSensorData.class);
         try {
-            connection.socketIOGetData(list, "f04cf0fa-8872-4b7f-bf5c-62b463000000", null, filter, new Event<List<BeamSensorData>>() {
+            connection.socketIOGetData(list, ownerUuid,ownerToken,uuidTargetDevice, filter, new Event<List<BeamSensorData>>() {
                 @Override
                 public void onEventFinish(List<BeamSensorData> object) {
                     if (callback != null) {

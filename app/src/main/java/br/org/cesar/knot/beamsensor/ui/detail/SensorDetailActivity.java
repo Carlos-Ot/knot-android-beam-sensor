@@ -37,7 +37,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
 
         KnotQueryData filter = new KnotQueryData();
         filter.setLimit(20);
-        beamController.getData(filter, getIntent().getStringExtra(EXTRA_UUID), this);
+        beamController.getData(filter, "aad047a0-773a-42ef-adbc-1dc031660000","6fe3d80c6e6ebab97919798078ade9deed18b23e","*", this);
 
     }
 

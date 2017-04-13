@@ -105,6 +105,15 @@ public class BeamSensor extends AbstractThingDevice{
         return beamSensorItemArrayList;
     }
 
+    public void setBeamSensorOwner(BeamSensorOwner beamSensorOwner) {
+        this.beamSensorOwner = beamSensorOwner;
+    }
+
+    public BeamSensorOwner getBeamSensorOwner(){
+        return this.beamSensorOwner;
+    }
+
+
 //    @Override
 //    public BeamSensor deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 //        final JsonObject jDevice = json.getAsJsonObject();

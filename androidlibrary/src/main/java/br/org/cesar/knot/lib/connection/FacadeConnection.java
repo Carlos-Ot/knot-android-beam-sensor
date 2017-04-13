@@ -266,6 +266,27 @@ public class FacadeConnection {
         }
     }
 
+
+    /**
+     * Get all data of the specific device
+     *
+     * @param type           List of abstracts objects
+     * @param ownerUuid      UUid of owner device
+     * @param ownerToken     token of owner device
+     * @param targetDeviceUuid    UUid of target device, use '*' for query all devices for the specified owner
+     * @param knotQueryData  Date query
+     * @param callbackResult Callback for this method
+     * @throws InvalidParametersException
+     * @throws SocketNotConnected
+     */
+    public <T extends AbstractThingData> void socketIOGetData(final KnotList<T> type, String ownerUuid, String ownerToken,String targetDeviceUuid, KnotQueryData knotQueryData, final Event<List<T>> callbackResult) throws InvalidParametersException, SocketNotConnected {
+        if (mSocketIO != null && isSocketConnected()) {
+            mSocketIO.getData(type, ownerUuid,ownerToken,targetDeviceUuid,knotQueryData, callbackResult);
+        } else {
+            throw new SocketNotConnected("Socket not connected or invalid. Did you call the method setupSocketIO?");
+        }
+    }
+
     /**
      * This method sends a message to a device list of your choice.
      *

@@ -66,6 +66,6 @@ public class ListFragment extends Fragment implements DeviceAdapter.ItemClickLis
 
     @Override
     public void onClick(BeamSensor beamSensor) {
-        startActivity(SensorDetailActivity.newIntent(getContext(), shot.getToken(), shot.getUuid()));
+        startActivity(SensorDetailActivity.newIntent(getContext(), beamSensor.getToken(), beamSensor.getUuid()));
     }
 }

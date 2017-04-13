@@ -31,8 +31,8 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder {
     public void bind(BeamSensor beamSensor) {
         tvDeviceUuid.setText(beamSensor.getId());
         tvDeviceName.setText(beamSensor.getIpAddress());
-        tvDeviceLatLong.setText(String.valueOf(beamSensor.getCenterReceiver().getLatitude()) + ", " + beamSensor
-                .getCenterReceiver().getLongitude());
+        tvDeviceLatLong.setText(String.valueOf(beamSensor.getController().getLatitude()) + ", " + beamSensor
+                .getController().getLongitude());
 //        tvDeviceTimestamp.setText(beamSensor.getId());
 
 

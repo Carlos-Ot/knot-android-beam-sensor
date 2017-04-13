@@ -8,39 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.scottyab.aescrypt.AESCrypt;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.controller.BeamController;
 import br.org.cesar.knot.beamsensor.data.local.PreferencesManager;
 import br.org.cesar.knot.beamsensor.data.networking.callback.AuthenticateRequestCallback;
-import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.ui.list.DeviceListActivity;
 import br.org.cesar.knot.beamsensor.util.Constants;
-import br.org.cesar.knot.beamsensor.util.Security;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -99,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         }
 
         //TODO remover
-        mUsernameEditText.setText("carlos");
+        mUsernameEditText.setText("renato");
         mPasswordEditText.setText("1234");
 
     }

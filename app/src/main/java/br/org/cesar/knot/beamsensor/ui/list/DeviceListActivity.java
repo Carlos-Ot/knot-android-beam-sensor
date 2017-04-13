@@ -24,6 +24,7 @@ import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.controller.BeamController;
+import br.org.cesar.knot.beamsensor.data.local.PreferencesManager;
 import br.org.cesar.knot.beamsensor.data.networking.callback.DeviceListRequestCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
@@ -50,6 +51,8 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
     private boolean isShowingMap = true;
 
+    private PreferencesManager preferencesManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,8 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        preferencesManager = PreferencesManager.getInstance();
 
         fragmentManager = getSupportFragmentManager();
 
@@ -173,18 +178,18 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
                     mapFragment.beamSensors = deviceList;
                     mapFragment.updateDeviceList();
                     listFragment.beamSensors = new ArrayList<>();
-                    for (BeamSensor bs :
-                            deviceList
-                            ) {
+                    for (BeamSensor bs : deviceList) {
                         if (bs.isBeamSensorOwner()) {
-//                            BeamSensorOwner beamSensorOwner = bs.getBeamSensorOwner();
-//                            String ownerUuid = beamSensorOwner.getUuid();
-//                            String ownerToken = beamSensorOwner.getToken();
+                            BeamSensorOwner beamSensorOwner = bs.getBeamSensorOwner();
+                            String ownerUuid = beamSensorOwner.getUuid();
+                            String ownerToken = beamSensorOwner.getToken();
+
+                            preferencesManager.setOwnerToken(ownerToken);
+                            preferencesManager.setOwnerUuid(ownerUuid);
 //                            if (BeamController.getInstance().authenticate(ownerUuid, ownerToken)) {
 //                                Log.d("Http", "Http Success Authentication");
 //                            }
-                        }
-                        else{
+                        } else {
                             listFragment.beamSensors.add(bs);
                         }
                     }

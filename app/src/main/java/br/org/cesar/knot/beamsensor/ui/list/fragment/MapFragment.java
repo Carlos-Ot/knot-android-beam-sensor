@@ -23,7 +23,6 @@ import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorItem;
 import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceAdapter;
-import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceViewHolder;
 
 
 public class MapFragment extends Fragment implements DeviceAdapter.ItemClickListener {
@@ -97,6 +96,7 @@ public class MapFragment extends Fragment implements DeviceAdapter.ItemClickList
                     // TODO: 10/04/17 beamSensor not online
 
                 }
+
                 googleMap.addMarker(new MarkerOptions().position(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor.getController().getLatitude())).title("Beam " +
                         "sensor"));
 

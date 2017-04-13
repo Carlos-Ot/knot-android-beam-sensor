@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_beam_sensor"-->
+        <!--android:layout_margin="16dp"-->
+        <!--android:layout_width="80dp"-->
+        <!--android:layout_height="80dp"/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_name"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:text="Nome do beam sensor"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:layout_alignTop="@+id/iv_beam_sensor"-->
+        <!--android:layout_toEndOf="@+id/iv_beam_sensor"/>-->
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_coordinate"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:text="-34523, -123123"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:layout_below="@+id/tv_name"-->
+        <!--android:layout_toEndOf="@+id/iv_beam_sensor"-->
+        <!--android:layout_marginTop="15dp"/>-->
+
+    <TextView
+        android:layout_marginRight="16dp"
+        android:id="@+id/tv_data_uuid"
+        android:text="#id 21312"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_timestamp"
+        android:layout_alignBottom="@+id/tv_timestamp"
+        android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:id="@+id/tv_data_timestamp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="HH:MM"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_toStartOf="@id/tv_data_uuid"
+        android:layout_alignBottom="@+id/iv_beam_sensor"
+        android:layout_toEndOf="@+id/iv_beam_sensor"/>
+
+
+
+
+
+
+</RelativeLayout>

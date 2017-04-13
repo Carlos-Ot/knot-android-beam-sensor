@@ -39,7 +39,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
                 }
             }
         });
-        return new DeviceViewHolder(view);
+        return viewHolder;
     }
 
     @Override

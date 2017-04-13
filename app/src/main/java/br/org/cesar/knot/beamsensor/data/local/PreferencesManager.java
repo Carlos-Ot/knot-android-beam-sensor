@@ -64,6 +64,28 @@ public class PreferencesManager {
         }
     }
 
+    public String getOwnerUuid() {
+        return mSharedPreferences.getString(Constants.KEY_OWNER_UUID, null);
+    }
+
+    public void setOwnerUuid(String uuid) {
+
+        if (uuid != null && !uuid.trim().isEmpty()) {
+            mSharedPreferences.edit().putString(Constants.KEY_OWNER_UUID, uuid.trim()).apply();
+        }
+    }
+
+    public String getOwnerToken() {
+        return mSharedPreferences.getString(Constants.KEY_OWNER_TOKEN, null);
+    }
+
+    public void setOwnerToken(String token) {
+
+        if (token != null && !token.trim().isEmpty()) {
+            mSharedPreferences.edit().putString(Constants.KEY_OWNER_TOKEN, token.trim()).apply();
+        }
+    }
+
 
 
 }

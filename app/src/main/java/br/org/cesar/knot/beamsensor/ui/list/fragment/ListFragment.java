@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
@@ -18,13 +19,12 @@ import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
 public class ListFragment extends Fragment implements DeviceAdapter.ItemClickListener{
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    private DeviceAdapter adapter;
-    public List<BeamSensor> beamSensors;
+    private DeviceAdapter adapter = new DeviceAdapter();
+    private ArrayList<BeamSensor> beamSensors = new ArrayList<>();
 
 
     public static ListFragment newInstance() {
@@ -35,9 +35,7 @@ public class ListFragment extends Fragment implements DeviceAdapter.ItemClickLis
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        adapter = new DeviceAdapter();
-//        adapter.setItemClickListener(this);
+        adapter.setItemClickListener(this);
     }
 
     @Override
@@ -48,7 +46,7 @@ public class ListFragment extends Fragment implements DeviceAdapter.ItemClickLis
 
         initRecyclerView();
         if (beamSensors != null && !beamSensors.isEmpty()) {
-            updateDeviceList();
+            updateDeviceList(beamSensors);
         }
 
         return view;
@@ -57,11 +55,14 @@ public class ListFragment extends Fragment implements DeviceAdapter.ItemClickLis
     private void initRecyclerView() {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
-//        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
     }
 
-    public void updateDeviceList() {
-//        adapter.setData(beamSensors);
+    public void updateDeviceList(ArrayList<BeamSensor> newSensors) {
+
+        beamSensors = newSensors;
+
+        adapter.setData(beamSensors);
     }
 
     @Override

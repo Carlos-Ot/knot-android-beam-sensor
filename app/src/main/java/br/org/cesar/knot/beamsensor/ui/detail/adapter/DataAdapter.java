@@ -33,8 +33,6 @@ public class DataAdapter extends RecyclerView.Adapter<DataViewHolder> {
 
     public void updateData(List<BeamSensorData> newData) {
         this.beamSensorData.addAll(newData);
-        //TODO order
-        notifyDataSetChanged();
     }
 
 }

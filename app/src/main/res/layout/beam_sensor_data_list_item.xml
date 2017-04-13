@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-    android:background="@color/colorAccent1">
+    android:background="@color/colorAccent">
 
     <!--<ImageView-->
         <!--android:id="@+id/iv_beam_sensor"-->

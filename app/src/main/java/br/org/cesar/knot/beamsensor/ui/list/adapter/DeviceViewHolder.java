@@ -41,17 +41,22 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder {
             tvDeviceLatLong.setText(String.valueOf(beamSensor.getController().getLatitude()) + ", " + beamSensor
                     .getController().getLongitude());
         }
-        /// TODO: 13/04/17 add image
         int textColor = android.R.color.holo_red_light;
         int iconColor = R.color.expanded_info_secondary_text_color;
 
         if (beamSensor.isOnline()) {
             tvStatus.setText(tvStatus.getContext().getResources().getString(R.string.device_view_holder_active));
             textColor = R.color.device_view_holder_active;
+            ivSensorImage.setImageDrawable(ContextCompat.getDrawable(ivSensorImage.getContext(), R.drawable
+                    .ic_sensor_active));
         } else {
             tvStatus.setText(tvStatus.getContext().getResources().getString(R.string.device_view_holder_inactive));
+            ivSensorImage.setImageDrawable(ContextCompat.getDrawable(ivSensorImage.getContext(), R.drawable
+                    .ic_sensor_inactive));
             iconColor = android.R.color.black;
         }
+
+
         tvStatus.setTextColor(ContextCompat.getColor(tvStatus.getContext(), textColor));
         ivStatus.setColorFilter(iconColor);
 

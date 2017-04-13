@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
@@ -28,7 +27,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
 
     @Override
     public DeviceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.beam_sensor_list_item_v2, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.beam_sensor_list_item, parent, false);
 
         final DeviceViewHolder viewHolder = new DeviceViewHolder(view);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

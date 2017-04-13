@@ -61,7 +61,6 @@ public class ListFragment extends Fragment implements DeviceAdapter.ItemClickLis
     public void updateDeviceList(ArrayList<BeamSensor> newSensors) {
 
         beamSensors = newSensors;
-
         adapter.setData(beamSensors);
     }
 

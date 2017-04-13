@@ -14,10 +14,9 @@ import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
 import br.org.cesar.knot.beamsensor.model.BeamSensorOwner;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.ListFragment;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.MapFragment;
-import br.org.cesar.knot.beamsensor.util.Security;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -41,7 +39,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.fragmentContainer)
-    LinearLayout fragmentContainer;
+    FrameLayout fragmentContainer;
 
     private FragmentManager fragmentManager;
 

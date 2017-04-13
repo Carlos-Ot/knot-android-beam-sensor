@@ -163,7 +163,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
 
     @Override
     public void onAuthenticateFailed() {
-        Log.d("miguel", "lala");
 
         runOnUiThread(new Runnable() {
             @Override

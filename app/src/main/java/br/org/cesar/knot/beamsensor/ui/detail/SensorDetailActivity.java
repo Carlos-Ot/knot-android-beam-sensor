@@ -51,7 +51,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
-        mToolbar.setTitle(R.string.title_data);
+        setTitle(R.string.title_data);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -83,6 +83,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == android.R.id.home) {
+
             finish();
         }
         return true;

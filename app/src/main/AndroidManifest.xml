@@ -24,6 +24,7 @@
         <activity
             android:name="br.org.cesar.knot.beamsensor.ui.login.LoginActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,16 +35,19 @@
         <activity
             android:name="br.org.cesar.knot.beamsensor.ui.detail.SensorDetailActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name="br.org.cesar.knot.beamsensor.ui.list.DeviceListActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name="br.org.cesar.knot.beamsensor.ui.login.CloudSetupActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar" />
 
     </application>

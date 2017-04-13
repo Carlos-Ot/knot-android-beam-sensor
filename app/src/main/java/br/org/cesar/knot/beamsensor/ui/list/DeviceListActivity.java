@@ -10,13 +10,13 @@
 package br.org.cesar.knot.beamsensor.ui.list;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -31,7 +31,6 @@ import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
 import br.org.cesar.knot.beamsensor.model.BeamSensorOwner;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.ListFragment;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.MapFragment;
-import br.org.cesar.knot.beamsensor.util.Security;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -40,7 +39,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.fragmentContainer)
-    LinearLayout fragmentContainer;
+    FrameLayout fragmentContainer;
 
     private FragmentManager fragmentManager;
 
@@ -53,6 +52,8 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
     private PreferencesManager preferencesManager;
 
+    private boolean isRunning = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
-        mToolbar.setTitle(R.string.title_device);
+        setTitle(R.string.title_device);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -75,51 +76,26 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
         updateFragmentState();
 
+    }
 
-        BeamController.getInstance().getBeamDevices(new BeamSensorFilter(), this);
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        // TODO: 11/04/17 remove comments
-        //start block of fake response
-//        BeamSensor a = new BeamSensor();
-//        BeamSensor b = new BeamSensor();
-//        BeamSensor c = new BeamSensor();
-//
-//        a.setId("123123");
-//        a.setOnline(true);
-//        a.setController(new BeamSensorItem(-8.058344, -34.872363, 1));
-//        a.setLeftFence(new BeamSensorItem(-8.058952, -34.872441, 0));
-//        a.setRightFence(new BeamSensorItem(-8.058450, -34.871687, 1));
-//
-//        b.setId("123123");
-//        b.setOnline(true);
-//        b.setController(new BeamSensorItem(-8.058631, -34.870872, 1));
-//        b.setLeftFence(new BeamSensorItem(-8.059156, -34.870898, 1));
-//        b.setRightFence(new BeamSensorItem(-8.058455, -34.871489, 0));
-//
-//        c.setId("123123");
-//        c.setOnline(true);
-//        c.setController(new BeamSensorItem(-8.059151, -34.871682, 1));
-//        c.setLeftFence(new BeamSensorItem(-8.058986, -34.872400, 1));
-//        c.setRightFence(new BeamSensorItem(-8.059332, -34.870984, 0));
-//
-//        ArrayList<BeamSensor> beamSensorArrayList = new ArrayList<>();
-//
-//        beamSensorArrayList.add(a);
-//        beamSensorArrayList.add(b);
-//        beamSensorArrayList.add(c);
-//        final ArrayList<BeamSensor> teste = beamSensorArrayList;
-//
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                onDeviceListsSuccess(teste);
-//            }
-//        }, 2000);
+        isRunning = true;
+        loadDevices();
+    }
 
-        //end block of fake response
+    @Override
+    protected void onPause() {
+        super.onPause();
 
+        isRunning = false;
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -146,70 +122,94 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
         if (this.isShowingMap) {
 
-            fragmentManager.beginTransaction()
-                    .replace(fragmentContainer.getId(), mapFragment)
-                    .commit();
+            fragmentManager.beginTransaction().replace(R.id.fragmentContainer, mapFragment).commit();
             if (menuItem != null) {
                 menuItem.setIcon(R.drawable.ic_list_black_24dp);
-
             }
 
         } else {
 
-            fragmentManager.beginTransaction()
-                    .replace(fragmentContainer.getId(), listFragment)
-                    .commit();
+            fragmentManager.beginTransaction().replace(R.id.fragmentContainer, listFragment).commit();
 
             if (menuItem != null) {
                 menuItem.setIcon(R.drawable.ic_map_black_24dp);
             }
         }
-
     }
 
 
     @Override
     public void onDeviceListsSuccess(final List<BeamSensor> deviceList) {
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (deviceList != null && !deviceList.isEmpty()) {
-                    mapFragment.beamSensors = deviceList;
-                    mapFragment.updateDeviceList();
-                    listFragment.beamSensors = new ArrayList<>();
-                    for (BeamSensor bs : deviceList) {
-                        if (bs.isBeamSensorOwner()) {
-                            BeamSensorOwner beamSensorOwner = bs.getBeamSensorOwner();
-                            String ownerUuid = beamSensorOwner.getUuid();
-                            String ownerToken = beamSensorOwner.getToken();
+        if (!isFinishing() && isRunning) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (deviceList != null && !deviceList.isEmpty()) {
+                        mapFragment.beamSensors = deviceList;
+                        mapFragment.updateDeviceList();
 
-                            preferencesManager.setOwnerToken(ownerToken);
-                            preferencesManager.setOwnerUuid(ownerUuid);
-//                            if (BeamController.getInstance().authenticate(ownerUuid, ownerToken)) {
-//                                Log.d("Http", "Http Success Authentication");
-//                            }
-                        } else {
-                            listFragment.beamSensors.add(bs);
+                        ArrayList<BeamSensor> newBS = new ArrayList<>();
+                        for (BeamSensor bs : deviceList) {
+                            if (bs.isBeamSensorOwner()) {
+                                BeamSensorOwner beamSensorOwner = bs.getBeamSensorOwner();
+                                String ownerUuid = beamSensorOwner.getUuid();
+                                String ownerToken = beamSensorOwner.getToken();
+
+                                //we are assuming there is only one owner
+                                preferencesManager.setOwnerToken(ownerToken);
+                                preferencesManager.setOwnerUuid(ownerUuid);
+                            } else {
+                                newBS.add(bs);
+                            }
                         }
+
+                        listFragment.updateDeviceList(newBS);
+
                     }
 
+                    reloadDevices();
                 }
-            }
-        });
+            });
+        }
+
+
     }
 
     @Override
     public void onDeviceListFailed() {
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(DeviceListActivity.this, R.string.text_device_list_failed, Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (!isFinishing() && isRunning) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(DeviceListActivity.this, R.string.text_device_list_failed, Toast.LENGTH_SHORT).show();
+
+                    reloadDevices();
+                }
+            });
+        }
 
     }
 
+    private void reloadDevices() {
+        if (!isFinishing()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isFinishing()) {
+                        loadDevices();
+                    }
+                }
+            }, 5000);
+        }
+    }
+
+
+    private void loadDevices() {
+        if (!isFinishing() && isRunning) {
+            BeamController.getInstance().getBeamDevices(new BeamSensorFilter(), this);
+        }
+    }
 
 }

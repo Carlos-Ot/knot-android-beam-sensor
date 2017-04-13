@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
@@ -12,14 +13,14 @@ import br.org.cesar.knot.beamsensor.model.BeamSensor;
 
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
 
-    private List<BeamSensor> beamSensors;
+    private ArrayList<BeamSensor> beamSensors = new ArrayList<>();
     private ItemClickListener mItemClickListener;
 
     public void setItemClickListener(ItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
 
-    public void setData(List<BeamSensor> beamSensorList) {
+    public void setData(ArrayList<BeamSensor> beamSensorList) {
         this.beamSensors = beamSensorList;
         notifyDataSetChanged();
     }

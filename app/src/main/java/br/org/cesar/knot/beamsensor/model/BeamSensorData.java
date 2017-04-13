@@ -12,8 +12,6 @@ public class BeamSensorData extends AbstractThingData {
 
     private String uuid;
 
-    private String timestamp;
-
     public String getId() {
         return id;
     }

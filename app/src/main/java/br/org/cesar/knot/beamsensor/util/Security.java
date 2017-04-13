@@ -1,7 +1,4 @@
 package br.org.cesar.knot.beamsensor.util;
-
-import android.util.Base64;
-
 import java.security.MessageDigest;
 
 import javax.crypto.Cipher;
@@ -19,9 +16,8 @@ public class Security {
         SecretKeySpec skey = new SecretKeySpec(thedigest, "AES");
         Cipher dcipher = Cipher.getInstance("AES");
         dcipher.init(Cipher.DECRYPT_MODE, skey);
-        byte[] decode = Base64.decode(encrypted, Base64.DEFAULT);
-       // byte[] clearbyte = dcipher.doFinal(toByte(encrypted));
-        byte[] clearbyte = dcipher.doFinal(decode);
+
+        byte[] clearbyte = dcipher.doFinal(toByte(encrypted));
         return new String(clearbyte);
     }
 

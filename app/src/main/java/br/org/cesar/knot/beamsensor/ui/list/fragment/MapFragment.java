@@ -76,33 +76,42 @@ public class MapFragment extends Fragment implements DeviceAdapter.ItemClickList
         //only populate map if googleMap is running
         if(googleMap == null) return;
 
+
         for (BeamSensor beamSensor : beamSensors) {
-            onlineBeamSensor.clear();
-            offlineBeamSensor.clear();
+            if (!beamSensor.isBeamSensorOwner()) {
+                onlineBeamSensor.clear();
+                offlineBeamSensor.clear();
 
-            if (beamSensor.isOnline()) {
-                for (BeamSensorItem beamSensorItem : beamSensor.getBeamSensorItens())
-                    if (beamSensorItem.getStatus() == 1) {
-                        onlineBeamSensor.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(),beamSensorItem.getLongitude()));
-                    } else {
-                        offlineBeamSensor.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(),beamSensorItem.getLongitude()));
-                    }
-                onlineBeamSensor.add(getGoogleMapCoordinate(beamSensor.getController().getLatitude(),beamSensor.getController().getLatitude()));
+                if (beamSensor.isOnline()) {
+                    for (BeamSensorItem beamSensorItem : beamSensor.getBeamSensorItens())
+                        if (beamSensorItem.getStatus() == 1) {
+                            onlineBeamSensor.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(), beamSensorItem.getLongitude()));
+                        } else {
+                            offlineBeamSensor.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(), beamSensorItem.getLongitude()));
+                        }
+                    onlineBeamSensor.add(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor.getController().getLatitude()));
 
 
-            } else {
+                } else {
 
-                // TODO: 10/04/17 beamSensor not online
+                    // TODO: 10/04/17 beamSensor not online
 
+                }
+                googleMap.addMarker(new MarkerOptions().position(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor.getController().getLatitude())).title("Beam " +
+                        "sensor"));
+
+                createPolyline(onlineBeamSensor, Color.BLUE);
+                createPolyline(offlineBeamSensor, Color.RED);
             }
-            googleMap.addMarker(new MarkerOptions().position(getGoogleMapCoordinate(beamSensor.getController().getLatitude(),beamSensor.getController().getLatitude())).title("Beam " +
-                    "sensor"));
-
-            createPolyline(onlineBeamSensor, Color.BLUE);
-            createPolyline(offlineBeamSensor, Color.RED);
         }
-        BeamSensor beamSensor = beamSensors.get(0);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getGoogleMapCoordinate(beamSensor.getController().getLatitude(),beamSensor.getController().getLatitude()), 15));
+
+        for (BeamSensor beamSensor : beamSensors) {
+            if (!beamSensor.isBeamSensorOwner()) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor.getController().getLatitude()), 15));
+                break;
+            }
+        }
+
 
     }
 

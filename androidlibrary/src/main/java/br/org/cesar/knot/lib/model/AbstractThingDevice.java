@@ -25,8 +25,16 @@ public abstract class AbstractThingDevice extends AbstractDeviceOwner {
     public List<SecurityListItem> sendWhitelist;
     public List<SecurityListItem> receiveWhitelist;
 
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
     //Another device that is owner of the device
-    public String owner;
+    private String owner;
 
     /**
      * Constructor of the class

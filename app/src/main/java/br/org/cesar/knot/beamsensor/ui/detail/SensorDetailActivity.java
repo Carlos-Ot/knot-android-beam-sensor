@@ -21,6 +21,7 @@ import br.org.cesar.knot.beamsensor.data.networking.callback.BeamSensorDataCallb
 import br.org.cesar.knot.beamsensor.model.BeamSensorData;
 import br.org.cesar.knot.beamsensor.ui.detail.adapter.DataAdapter;
 import br.org.cesar.knot.beamsensor.util.Constants;
+import br.org.cesar.knot.beamsensor.util.Utils;
 import br.org.cesar.knot.lib.model.KnotQueryData;
 import br.org.cesar.knot.lib.model.KnotQueryDateData;
 import butterknife.BindView;
@@ -151,13 +152,17 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
         mAdapter.notifyDataSetChanged();
     }
 
+    private BeamSensorData getLastData() {
+        return mAdapter.getLastData();
+    }
+
     private void reloadData() {
         if (!isFinishing()) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (!isFinishing()) {
-                        updateQueryDate();
+//                        updateQueryDate();
                         loadBeamSensorData();
                     }
                 }
@@ -179,39 +184,54 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
 
         if (mFilter != null) {
 
-            Calendar calendar = Calendar.getInstance();
+//            Calendar calendar = Calendar.getInstance();
 
-            boolean isFirstTime = (mDateData == null);
+//            boolean isFirstTime = (mDateData == null);
 
-            if (!isFirstTime) {
-                mFilter.setStartDate(mDateData);
-            }
+            Calendar lastDataCalendar = Utils.loadNextDateFromHistory(getLastData());
 
-            mDateData = new KnotQueryDateData(calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH),
-                    calendar.get(Calendar.HOUR),
-                    calendar.get(Calendar.MINUTE),
-                    calendar.get(Calendar.SECOND),
-                    calendar.get(Calendar.MILLISECOND));
-
-            mFilter.setFinishDate(mDateData);
-
-            if (isFirstTime) {
-
-                calendar.add(Calendar.SECOND, (-1 * Constants.POOLING_TIMEOUT));
-
-                KnotQueryDateData previous = new KnotQueryDateData(calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH),
-                        calendar.get(Calendar.HOUR),
-                        calendar.get(Calendar.MINUTE),
-                        calendar.get(Calendar.SECOND),
-                        calendar.get(Calendar.MILLISECOND));
+            if (lastDataCalendar != null) {
+                KnotQueryDateData previous = new KnotQueryDateData(lastDataCalendar.get(Calendar.YEAR),
+                        lastDataCalendar.get(Calendar.MONTH),
+                        lastDataCalendar.get(Calendar.DAY_OF_MONTH),
+                        lastDataCalendar.get(Calendar.HOUR),
+                        lastDataCalendar.get(Calendar.MINUTE),
+                        lastDataCalendar.get(Calendar.SECOND),
+                        lastDataCalendar.get(Calendar.MILLISECOND));
 
                 mFilter.setStartDate(previous);
-
             }
+
+
+//            if (!isFirstTime) {
+//                mFilter.setStartDate(mDateData);
+//            }
+//
+//            mDateData = new KnotQueryDateData(calendar.get(Calendar.YEAR),
+//                    calendar.get(Calendar.MONTH),
+//                    calendar.get(Calendar.DAY_OF_MONTH),
+//                    calendar.get(Calendar.HOUR),
+//                    calendar.get(Calendar.MINUTE),
+//                    calendar.get(Calendar.SECOND),
+//                    calendar.get(Calendar.MILLISECOND));
+//
+//            mFilter.setFinishDate(mDateData);
+//
+//            if (isFirstTime) {
+//
+//                calendar.add(Calendar.SECOND, (-1 * Constants.POOLING_TIMEOUT));
+//
+//                KnotQueryDateData previous = new KnotQueryDateData(calendar.get(Calendar.YEAR),
+//                        calendar.get(Calendar.MONTH),
+//                        calendar.get(Calendar.DAY_OF_MONTH),
+//                        calendar.get(Calendar.HOUR),
+//                        calendar.get(Calendar.MINUTE),
+//                        calendar.get(Calendar.SECOND),
+//                        calendar.get(Calendar.MILLISECOND));
+//
+//                mFilter.setStartDate(previous);
+//
+//            }
 
         }
     }

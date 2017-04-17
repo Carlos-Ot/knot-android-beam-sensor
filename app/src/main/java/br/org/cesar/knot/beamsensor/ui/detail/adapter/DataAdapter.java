@@ -24,8 +24,10 @@ public class DataAdapter extends RecyclerView.Adapter<DataViewHolder> {
     @Override
     public void onBindViewHolder(DataViewHolder holder, int position) {
 
-        int reversePosition = (beamSensorData.size() - 1) - position;
-        holder.bind(beamSensorData.get(reversePosition));
+//        int reversePosition = (beamSensorData.size() - 1) - position;
+//        holder.bind(beamSensorData.get(reversePosition));
+
+        holder.bind(beamSensorData.get(position));
     }
 
     @Override
@@ -34,7 +36,15 @@ public class DataAdapter extends RecyclerView.Adapter<DataViewHolder> {
     }
 
     public void updateData(List<BeamSensorData> newData) {
+        this.beamSensorData.clear();
         this.beamSensorData.addAll(newData);
     }
 
+    public BeamSensorData getLastData() {
+
+        if (this.beamSensorData != null && !this.beamSensorData.isEmpty()) {
+            return this.beamSensorData.get(0);
+        }
+        return null;
+    }
 }

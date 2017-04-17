@@ -10,6 +10,13 @@ import android.support.v4.content.res.ResourcesCompat;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+import br.org.cesar.knot.beamsensor.model.BeamSensorData;
+
 public final class Utils {
 
     private Utils() {
@@ -23,6 +30,29 @@ public final class Utils {
         vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+
+    public static Calendar loadNextDateFromHistory(BeamSensorData data) {
+
+        Calendar calendar = null;
+
+        try {
+            if (data != null && data.getTimestamp() != null) {
+                calendar = Calendar.getInstance();
+                String output = data.getTimestamp().replace("T", " ").replace("Z", "");
+
+                //2017-04-17T16:48:29.172Z
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
+                calendar.setTime(sdf.parse(output));
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            calendar = null;
+        }
+
+        return calendar;
     }
 
 }

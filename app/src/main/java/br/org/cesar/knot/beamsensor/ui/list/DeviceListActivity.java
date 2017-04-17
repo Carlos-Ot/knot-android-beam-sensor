@@ -127,8 +127,8 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
             }
 
         } else {
-
             fragmentManager.beginTransaction().replace(R.id.fragmentContainer, listFragment).commit();
+            mapFragment.shouldSetCamera = true;
 
             if (menuItem != null) {
                 menuItem.setIcon(R.drawable.ic_map_black_24dp);

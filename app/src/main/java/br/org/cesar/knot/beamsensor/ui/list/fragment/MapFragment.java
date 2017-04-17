@@ -15,6 +15,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -24,18 +25,20 @@ import java.util.List;
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorItem;
-import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceAdapter;
+import br.org.cesar.knot.beamsensor.ui.detail.SensorDetailActivity;
 import br.org.cesar.knot.beamsensor.util.Utils;
 
 
-public class MapFragment extends Fragment implements DeviceAdapter.ItemClickListener {
+public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
 
+    public static final int FENCY_ACTIVE = 1;
     private ArrayList<LatLng> activeFence;
     private ArrayList<LatLng> inactiveFence;
     private ArrayList<LatLng> violatedFence;
     private GoogleMap googleMap;
     public List<BeamSensor> beamSensors;
-    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+    private LatLngBounds.Builder builder;
+    public boolean shouldSetCamera = true;
 
 
     public static MapFragment newInstance() {
@@ -65,6 +68,8 @@ public class MapFragment extends Fragment implements DeviceAdapter.ItemClickList
                 if (beamSensors != null && !beamSensors.isEmpty()) {
                     updateDeviceList();
                 }
+
+                googleMap.setOnMarkerClickListener(MapFragment.this);
             }
         });
 
@@ -72,55 +77,54 @@ public class MapFragment extends Fragment implements DeviceAdapter.ItemClickList
         return view;
     }
 
-    private LatLng getGoogleMapCoordinate(double latitude, double longitude) {
-        return new LatLng(latitude, longitude);
+    private LatLng getCoordinate(BeamSensorItem beamSensorItem) {
+        return new LatLng(beamSensorItem.getLatitude(), beamSensorItem.getLongitude());
     }
 
     public void updateDeviceList() {
 
         //only populate map if googleMap is running
-        if (googleMap == null) return;
+        if (googleMap == null || beamSensors.size() == 0) return;
 
-        for (BeamSensor beamSensor : beamSensors) {
-            if (!beamSensor.isBeamSensorOwner() && beamSensor.isOnline()) {
+        // clear old markers
+        googleMap.clear();
+        builder = new LatLngBounds.Builder();
+
+        for (int i = 0; i < beamSensors.size(); i++) {
+            if (!beamSensors.get(i).isBeamSensorOwner() && beamSensors.get(i).isOnline()) {
                 activeFence.clear();
                 inactiveFence.clear();
-                for (BeamSensorItem beamSensorItem : beamSensor.getBeamSensorItens())
-                    if (beamSensorItem.getStatus() == 1) {
-                        activeFence.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(), beamSensorItem.getLongitude()));
+                for (BeamSensorItem beamSensorItem : beamSensors.get(i).getBeamSensorItens())
+                    if (beamSensorItem.getStatus() == FENCY_ACTIVE) {
+                        activeFence.add(getCoordinate(beamSensorItem));
                     } else {
-                        inactiveFence.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(), beamSensorItem.getLongitude()));
+                        inactiveFence.add(getCoordinate(beamSensorItem));
                     }
+
                 //add controller
-                activeFence.add(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor
-                        .getController().getLongitude()));
-
-                builder.include(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor
-                        .getController().getLongitude()));
+                activeFence.add(getCoordinate(beamSensors.get(i).getController()));
+                builder.include(getCoordinate(beamSensors.get(i).getController()));
 
 
+                //add controller marker
                 googleMap.addMarker(new MarkerOptions().icon(Utils.vectorToBitmap(R.drawable
                         .ic_sensor_active, getResources()))
-                        .position(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor
-                                .getController().getLongitude())).title("Beam " +
-                        "sensor active"));
+                        .position(getCoordinate(beamSensors.get(i).getController()))).setTag(i);
 
 
-            } else if (!beamSensor.isBeamSensorOwner() && !beamSensor.isOnline()) {
-                for (BeamSensorItem beamSensorItem : beamSensor.getBeamSensorItens()) {
-                    violatedFence.add(getGoogleMapCoordinate(beamSensorItem.getLatitude(), beamSensorItem.getLongitude()));
+            } else if (!beamSensors.get(i).isBeamSensorOwner() && !beamSensors.get(i).isOnline()) {
+                for (BeamSensorItem beamSensorItem : beamSensors.get(i).getBeamSensorItens()) {
+                    violatedFence.add(getCoordinate(beamSensorItem));
                 }
-                violatedFence.add(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor
-                        .getController().getLongitude()));
 
-                builder.include(getGoogleMapCoordinate(beamSensor.getController().getLatitude(), beamSensor
-                        .getController().getLongitude()));
+                //add controller
+                violatedFence.add(getCoordinate(beamSensors.get(i).getController()));
+                builder.include(getCoordinate(beamSensors.get(i).getController()));
 
 
+                //add controller marker
                 googleMap.addMarker(new MarkerOptions().icon(Utils.vectorToBitmap(R.drawable.ic_sensor_inactive, getResources()))
-                        .position(getGoogleMapCoordinate(beamSensor.getController()
-                        .getLatitude(), beamSensor.getController().getLongitude())).title("Beam " +
-                        "sensor inactive"));
+                        .position(getCoordinate(beamSensors.get(i).getController()))).setTag(i);
 
             }
 
@@ -130,11 +134,17 @@ public class MapFragment extends Fragment implements DeviceAdapter.ItemClickList
             createPolyline(inactiveFence, Color.GRAY);
         }
 
+        setCameraPosition(builder);
+
+    }
+
+    private void setCameraPosition(LatLngBounds.Builder builder) {
+        if(!shouldSetCamera) return;
         int width = getResources().getDisplayMetrics().widthPixels;
         int padding = (int) (width * 0.20);
         CameraUpdate camera = CameraUpdateFactory.newLatLngBounds(builder.build(), padding);
         googleMap.animateCamera(camera);
-
+        shouldSetCamera = false;
     }
 
 
@@ -146,13 +156,17 @@ public class MapFragment extends Fragment implements DeviceAdapter.ItemClickList
     }
 
     @Override
-    public void onClick(BeamSensor beamSensor) {
-
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         googleMap = null;
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Integer position = (Integer) marker.getTag();
+        if (position != null) {
+            startActivity(SensorDetailActivity.newIntent(getContext(), beamSensors.get(position).getUuid()));
+        }
+        return true;
     }
 }

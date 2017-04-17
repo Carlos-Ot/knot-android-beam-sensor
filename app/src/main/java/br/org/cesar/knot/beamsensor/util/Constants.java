@@ -21,8 +21,11 @@ public class Constants {
 
     public static final int INVALID_CLOUD_PORT = -1;
 
-    public static final int POOLING_TIMEOUT = 5000;
+    public static final int POOLING_TIMEOUT = 10000;
 
     public static final int FILTER_LIMIT = 20;
 
+    public static final int STATUS_VIOLATION = 0;
+
+    public static final int STATUS_NORMAL = 1;
 }

@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.Calendar;
 import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
@@ -21,6 +22,7 @@ import br.org.cesar.knot.beamsensor.model.BeamSensorData;
 import br.org.cesar.knot.beamsensor.ui.detail.adapter.DataAdapter;
 import br.org.cesar.knot.beamsensor.util.Constants;
 import br.org.cesar.knot.lib.model.KnotQueryData;
+import br.org.cesar.knot.lib.model.KnotQueryDateData;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -42,6 +44,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
 
     private String mSearchUuid;
     private KnotQueryData mFilter;
+    private KnotQueryDateData mDateData;
 
     private PreferencesManager preferencesManager;
 
@@ -117,11 +120,13 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
                     @Override
                     public void run() {
                         updateDataList(data);
+
+                        reloadData();
                     }
                 });
 
             }
-            reloadData();
+
         }
     }
 
@@ -152,6 +157,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
                 @Override
                 public void run() {
                     if (!isFinishing()) {
+                        updateQueryDate();
                         loadBeamSensorData();
                     }
                 }
@@ -166,6 +172,47 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
                     preferencesManager.getOwnerUuid(),
                     preferencesManager.getOwnerToken(),
                     mSearchUuid, this);
+        }
+    }
+
+    private void updateQueryDate() {
+
+        if (mFilter != null) {
+
+            Calendar calendar = Calendar.getInstance();
+
+            boolean isFirstTime = (mDateData == null);
+
+            if (!isFirstTime) {
+                mFilter.setStartDate(mDateData);
+            }
+
+            mDateData = new KnotQueryDateData(calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH),
+                    calendar.get(Calendar.HOUR),
+                    calendar.get(Calendar.MINUTE),
+                    calendar.get(Calendar.SECOND),
+                    calendar.get(Calendar.MILLISECOND));
+
+            mFilter.setFinishDate(mDateData);
+
+            if (isFirstTime) {
+
+                calendar.add(Calendar.SECOND, (-1 * Constants.POOLING_TIMEOUT));
+
+                KnotQueryDateData previous = new KnotQueryDateData(calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH),
+                        calendar.get(Calendar.HOUR),
+                        calendar.get(Calendar.MINUTE),
+                        calendar.get(Calendar.SECOND),
+                        calendar.get(Calendar.MILLISECOND));
+
+                mFilter.setStartDate(previous);
+
+            }
+
         }
     }
 }

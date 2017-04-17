@@ -8,7 +8,7 @@ import br.org.cesar.knot.lib.model.AbstractThingDevice;
  * Created by carlos on 09/03/17.
  */
 
-public class BeamSensor extends AbstractThingDevice{
+public class BeamSensor extends AbstractThingDevice {
     private boolean online;
     @SerializedName("_id")
     private String id;
@@ -88,11 +88,9 @@ public class BeamSensor extends AbstractThingDevice{
 
         ArrayList<BeamSensorItem> beamSensorItemArrayList = new ArrayList<>();
 
-        if(controller == null)
-            return beamSensorItemArrayList;
+        if(controller == null) return beamSensorItemArrayList;
 
         beamSensorItemArrayList.add(leftFence);
-        beamSensorItemArrayList.add(controller);
         beamSensorItemArrayList.add(rightFence);
 
         return beamSensorItemArrayList;

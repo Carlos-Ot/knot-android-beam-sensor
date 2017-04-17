@@ -118,7 +118,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
             fragmentManager.beginTransaction().replace(R.id.fragmentContainer, mapFragment).commit();
             if (menuItem != null) {
-                menuItem.setIcon(R.drawable.ic_list_black_24dp);
+                menuItem.setIcon(R.drawable.ic_list);
             }
 
         } else {
@@ -126,7 +126,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
             mapFragment.shouldSetCamera = true;
 
             if (menuItem != null) {
-                menuItem.setIcon(R.drawable.ic_map_black_24dp);
+                menuItem.setIcon(R.drawable.ic_map_sensor);
             }
         }
     }

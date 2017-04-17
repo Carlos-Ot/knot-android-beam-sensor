@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -32,25 +33,16 @@ import br.org.cesar.knot.beamsensor.util.Utils;
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
 
     public static final int FENCY_ACTIVE = 1;
-    private ArrayList<LatLng> activeFence;
-    private ArrayList<LatLng> inactiveFence;
-    private ArrayList<LatLng> violatedFence;
+    public static final int FENCY_VIOLATED = 0;
     private GoogleMap googleMap;
     public List<BeamSensor> beamSensors;
     private LatLngBounds.Builder builder;
     public boolean shouldSetCamera = true;
+    private ArrayList<Polyline> polylineList = new ArrayList<>();
 
 
     public static MapFragment newInstance() {
         return new MapFragment();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        activeFence = new ArrayList<>();
-        inactiveFence = new ArrayList<>();
-        violatedFence = new ArrayList<>();
     }
 
     @Override
@@ -88,58 +80,67 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         // clear old markers
         googleMap.clear();
+        for (Polyline p : polylineList) {
+            p.remove();
+        }
+        polylineList.clear();
         builder = new LatLngBounds.Builder();
 
         for (int i = 0; i < beamSensors.size(); i++) {
-            if (!beamSensors.get(i).isBeamSensorOwner() && beamSensors.get(i).isOnline()) {
-                activeFence.clear();
-                inactiveFence.clear();
-                for (BeamSensorItem beamSensorItem : beamSensors.get(i).getBeamSensorItens())
-                    if (beamSensorItem.getStatus() == FENCY_ACTIVE) {
-                        activeFence.add(getCoordinate(beamSensorItem));
-                    } else {
-                        inactiveFence.add(getCoordinate(beamSensorItem));
-                    }
-
-                //add controller
-                activeFence.add(getCoordinate(beamSensors.get(i).getController()));
-                builder.include(getCoordinate(beamSensors.get(i).getController()));
-
-
-                //add controller marker
-                googleMap.addMarker(new MarkerOptions().icon(Utils.vectorToBitmap(R.drawable
-                        .ic_sensor_active, getResources()))
-                        .position(getCoordinate(beamSensors.get(i).getController()))).setTag(i);
-
-
-            } else if (!beamSensors.get(i).isBeamSensorOwner() && !beamSensors.get(i).isOnline()) {
-                for (BeamSensorItem beamSensorItem : beamSensors.get(i).getBeamSensorItens()) {
-                    violatedFence.add(getCoordinate(beamSensorItem));
-                }
-
-                //add controller
-                violatedFence.add(getCoordinate(beamSensors.get(i).getController()));
-                builder.include(getCoordinate(beamSensors.get(i).getController()));
-
-
-                //add controller marker
-                googleMap.addMarker(new MarkerOptions().icon(Utils.vectorToBitmap(R.drawable.ic_sensor_inactive, getResources()))
-                        .position(getCoordinate(beamSensors.get(i).getController()))).setTag(i);
-
+            if (!beamSensors.get(i).isBeamSensorOwner()) {
+                createLine(beamSensors.get(i), i);
             }
 
-
-            createPolyline(activeFence, Color.BLUE);
-            createPolyline(violatedFence, Color.RED);
-            createPolyline(inactiveFence, Color.GRAY);
         }
-
-        setCameraPosition(builder);
+        setCameraPosition();
 
     }
 
-    private void setCameraPosition(LatLngBounds.Builder builder) {
-        if(!shouldSetCamera) return;
+    private void createLine(BeamSensor father, int index) {
+        boolean isOnline = father.isOnline();
+
+        if (isOnline) {
+            googleMap.addMarker(new MarkerOptions().icon(Utils.vectorToBitmap(R.drawable.ic_sensor_active, getResources()))
+                    .position(getCoordinate(father.getController()))).setTag(index);
+        } else {
+            googleMap.addMarker(new MarkerOptions().icon(Utils.vectorToBitmap(R.drawable.ic_sensor_inactive, getResources()))
+                    .position(getCoordinate(father.getController()))).setTag(index);
+        }
+        //add controller marker
+        builder.include(getCoordinate(father.getController()));
+
+        ArrayList<LatLng> latLngList = new ArrayList<>();
+
+        for (BeamSensorItem beamSensorItem : father.getBeamSensorItens()) {
+            latLngList.clear();
+            latLngList.addAll(createVertex(getCoordinate(father.getController()), getCoordinate(beamSensorItem)));
+
+            if (isOnline) {
+                if (beamSensorItem.getStatus() == FENCY_VIOLATED) {
+                    createPolyline(latLngList, Color.RED);
+
+                } else if (beamSensorItem.getStatus() == FENCY_ACTIVE) {
+                    createPolyline(latLngList, Color.BLUE);
+
+                }
+            } else {
+                createPolyline(latLngList, Color.GRAY);
+            }
+
+        }
+
+    }
+
+    private ArrayList<LatLng> createVertex(LatLng controller, LatLng edge) {
+        ArrayList<LatLng> vertex = new ArrayList<>();
+        vertex.add(controller);
+        vertex.add(edge);
+        return vertex;
+    }
+
+
+    private void setCameraPosition() {
+        if (!shouldSetCamera) return;
         int width = getResources().getDisplayMetrics().widthPixels;
         int padding = (int) (width * 0.20);
         CameraUpdate camera = CameraUpdateFactory.newLatLngBounds(builder.build(), padding);
@@ -148,11 +149,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     }
 
 
-    private void createPolyline(ArrayList<LatLng> latlng, @ColorInt int color) {
-        googleMap.addPolyline(new PolylineOptions()
-                .addAll(latlng)
+    private void createPolyline(ArrayList<LatLng> latLng, @ColorInt int color) {
+        polylineList.add(googleMap.addPolyline(new PolylineOptions()
+                .addAll(latLng)
                 .width(10)
-                .color(color));
+                .color(color)));
     }
 
     @Override

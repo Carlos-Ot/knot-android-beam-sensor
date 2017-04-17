@@ -31,6 +31,7 @@ import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
 import br.org.cesar.knot.beamsensor.model.BeamSensorOwner;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.ListFragment;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.MapFragment;
+import br.org.cesar.knot.beamsensor.util.Constants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -74,7 +75,6 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
         listFragment = ListFragment.newInstance();
 
         updateFragmentState();
-
     }
 
     @Override
@@ -90,11 +90,6 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
         super.onPause();
 
         isRunning = false;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     @Override
@@ -172,7 +167,6 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
             });
         }
 
-
     }
 
     @Override
@@ -200,7 +194,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
                         loadDevices();
                     }
                 }
-            }, 5000);
+            }, Constants.POOLING_TIMEOUT);
         }
     }
 

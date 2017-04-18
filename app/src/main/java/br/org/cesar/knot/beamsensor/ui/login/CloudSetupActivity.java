@@ -19,11 +19,11 @@ import android.widget.Toast;
 
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.data.local.PreferencesManager;
+import br.org.cesar.knot.beamsensor.util.Constants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CloudSetupActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-
 
     @BindView(R.id.ip_et)
     EditText edtIp;
@@ -47,11 +47,12 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
 
         @Override
         public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-            checkFieldsForEmptyValues();
+
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
+            checkFieldsForEmptyValues();
         }
     };
 
@@ -72,10 +73,17 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        edtIp.addTextChangedListener(mCloudEmptyWatcher);
+        edtPort.addTextChangedListener(mCloudEmptyWatcher);
         edtPort.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
 
         edtIp.addTextChangedListener(mCloudEmptyWatcher);
+
+        if (mPreferencesManager.getCloudIp() != null && !mPreferencesManager.getCloudIp().isEmpty()) {
+            edtIp.setText(mPreferencesManager.getCloudIp());
+        }
+        if (mPreferencesManager.getCloudPort() != Constants.INVALID_CLOUD_PORT) {
+            edtPort.setText(String.valueOf(mPreferencesManager.getCloudPort()));
+        }
 
         cbCloud.setChecked(mPreferencesManager.getUseCloud());
 
@@ -106,10 +114,8 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
         btnSave.setOnClickListener(this);
 
         //TODO remover
-        edtIp.setText("54.175.32.51");
-        edtPort.setText("3000");
-
-
+//        edtIp.setText("54.175.32.51");
+//        edtPort.setText("3000");
 
     }
 

@@ -79,8 +79,8 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         }
 
         //TODO remover
-        mUsernameEditText.setText("knot-teste");
-        mPasswordEditText.setText("knot");
+//        mUsernameEditText.setText("knot-teste");
+//        mPasswordEditText.setText("knot");
 
     }
 

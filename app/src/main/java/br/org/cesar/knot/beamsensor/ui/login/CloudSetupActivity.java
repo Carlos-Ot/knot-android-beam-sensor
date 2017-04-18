@@ -106,8 +106,8 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
         btnSave.setOnClickListener(this);
 
         //TODO remover
-        edtIp.setText("54.175.32.51");
-        edtPort.setText("3000");
+//        edtIp.setText("54.175.32.51");
+//        edtPort.setText("3000");
 
 
 

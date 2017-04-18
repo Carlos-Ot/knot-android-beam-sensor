@@ -32,23 +32,6 @@ public class DataViewHolder extends RecyclerView.ViewHolder {
 
         tvDataTimestamp.setText(beamSensorData.getTimestamp());
 
-        tvDataStatus.setText(getTextFromStatus(Integer.valueOf(beamSensorData.getValue())));
+        tvDataStatus.setText(beamSensorData.getData().getValue() ? "Normal" : "Violation");
     }
-
-    private String getTextFromStatus(int status) {
-
-        String result = "Unknown";
-
-        switch (status) {
-            case Constants.STATUS_VIOLATION:
-                result = "Violation";
-                break;
-            case Constants.STATUS_NORMAL:
-                result = "Normal";
-                break;
-        }
-
-        return result;
-    }
-
 }

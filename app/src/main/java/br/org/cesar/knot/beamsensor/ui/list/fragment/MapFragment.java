@@ -112,22 +112,19 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         ArrayList<LatLng> latLngList = new ArrayList<>();
 
-        for (BeamSensorItem beamSensorItem : father.getBeamSensorItens()) {
+        for (BeamSensorItem beamSensorItem : father.getSchema()) {
             latLngList.clear();
             latLngList.addAll(createVertex(new LatLng(father.getLatitude(), father.getLongitude()), getCoordinate(beamSensorItem)));
 
             if (isOnline) {
-                if (beamSensorItem.getStatus() == FENCY_VIOLATED) {
-                    createPolyline(latLngList, Color.RED);
-
-                } else if (beamSensorItem.getStatus() == FENCY_ACTIVE) {
+                if (beamSensorItem.getStatus()) {
                     createPolyline(latLngList, Color.BLUE);
-
+                } else {
+                    createPolyline(latLngList, Color.RED);
                 }
             } else {
                 createPolyline(latLngList, Color.GRAY);
             }
-
         }
 
     }
@@ -168,7 +165,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public boolean onMarkerClick(Marker marker) {
         Integer position = (Integer) marker.getTag();
         if (position != null) {
-            startActivity(SensorDetailActivity.newIntent(getContext(), beamSensors.get(position).getUuid()));
+            startActivityForResult(SensorDetailActivity.newIntent(getContext(), beamSensors.get(position).getUuid()), 1);
         }
         return true;
     }

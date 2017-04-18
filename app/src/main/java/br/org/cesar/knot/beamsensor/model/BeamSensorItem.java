@@ -15,7 +15,7 @@ import com.google.gson.annotations.SerializedName;
 public class BeamSensorItem {
 
     @SerializedName("sensor_id")
-    private int id;
+    private String id;
     @SerializedName("value_type")
     private int valueType;
     @SerializedName("unit")
@@ -29,7 +29,7 @@ public class BeamSensorItem {
     @SerializedName("longitude")
     private double longitude;
 
-    private int status;
+    private boolean status;
 
     public double getLatitude() {
         return latitude;
@@ -47,11 +47,11 @@ public class BeamSensorItem {
         this.longitude = longitude;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -87,11 +87,11 @@ public class BeamSensorItem {
         this.name = name;
     }
 
-    public int getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 }

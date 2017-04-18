@@ -56,22 +56,6 @@ public class BeamSensor extends AbstractThingDevice {
         return online;
     }
 
-
-    public ArrayList<BeamSensorItem> getBeamSensorItens() {
-
-        ArrayList<BeamSensorItem> beamSensorItemArrayList = new ArrayList<>();
-
-//        if (leftFence != null) {
-//            beamSensorItemArrayList.add(leftFence);
-//        }
-//
-//        if (rightFence != null) {
-//            beamSensorItemArrayList.add(rightFence);
-//        }
-
-        return beamSensorItemArrayList;
-    }
-
     public void setBeamSensorOwner(BeamSensorOwner beamSensorOwner) {
         this.beamSensorOwner = beamSensorOwner;
     }

@@ -5,30 +5,14 @@ import br.org.cesar.knot.lib.model.AbstractThingData;
 
 public class BeamSensorData extends AbstractThingData {
 
-    @SerializedName("sensor_id")
-    private String id;
-
-    private String value;
-
-    private int status;
-
+    @SerializedName("uuid")
     private String uuid;
 
-    public String getId() {
-        return id;
-    }
+    @SerializedName("source")
+    private String source;
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
+    @SerializedName("data")
+    private FenceData data;
 
     public String getUuid() {
         return uuid;
@@ -38,19 +22,20 @@ public class BeamSensorData extends AbstractThingData {
         this.uuid = uuid;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public String getSource() {
+        return source;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setSource(String source) {
+        this.source = source;
     }
 
-    public int getStatus() {
-        return status;
+    public FenceData getData() {
+        return data;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setData(FenceData data) {
+        this.data = data;
     }
+
 }

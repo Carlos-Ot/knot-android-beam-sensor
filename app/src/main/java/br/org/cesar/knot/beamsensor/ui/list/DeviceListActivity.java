@@ -9,6 +9,7 @@
  */
 package br.org.cesar.knot.beamsensor.ui.list;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
@@ -33,6 +34,7 @@ import br.org.cesar.knot.beamsensor.data.networking.callback.GetOwnerCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorData;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
+import br.org.cesar.knot.beamsensor.model.BeamSensorItem;
 import br.org.cesar.knot.beamsensor.model.BeamSensorOwner;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.ListFragment;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.MapFragment;
@@ -73,8 +75,9 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
 
     private List<BeamSensor> beamSensorList;
+    private List<BeamSensorData> beamSensorDataList = new ArrayList<>();
 
-    private int requestDataSuccessCounter = 0;
+    private int requestDataCounter = 0;
 
 
     @Override
@@ -106,6 +109,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
         //first should request owner and save his token and uuid
         loadOwners();
+        isRunning = true;
 
         updateFragmentState();
     }
@@ -115,10 +119,6 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
         super.onResume();
 
         isRunning = true;
-
-//        if (hasLoadedOwners) {
-//            reloadDevices();
-//        }
     }
 
     @Override
@@ -301,7 +301,8 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
     private void loadBeamSensorData() {
         if (!isFinishing() && isRunning) {
-            requestDataSuccessCounter = 0;
+            requestDataCounter = 0;
+            beamSensorDataList.clear();
 
             for (BeamSensor sensor : beamSensorList) {
 
@@ -316,20 +317,13 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
     @Override
     public void onBeamSensorDataSuccess(final List<BeamSensorData> data) {
-//        beamSensorList.get(0).getSchema().
-        //set data in beamSensorItem
-        if (!isFinishing() && isRunning) {
 
+        if (!isFinishing() && isRunning) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    requestDataSuccessCounter++;
-                    if (requestDataSuccessCounter == beamSensorList.size()) {
-                        populateBeamSensorItem(data.get(0).getStatus());
-                        updateListAndMap();
-                        reloadDevices();
-                    }
-
+                    beamSensorDataList = data;
+                    checkRequestBeamDataCounter();
 
                 }
             });
@@ -338,12 +332,55 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
     }
 
-    private void populateBeamSensorItem(int status) {
-        beamSensorList.get(0).getSchema().get(0).setLatitude(status);
+    private void checkRequestBeamDataCounter() {
+        requestDataCounter++;
+        if (requestDataCounter == beamSensorList.size()) {
+            if (beamSensorDataList != null && !beamSensorDataList.isEmpty()) {
+                populateBeamSensorItem();
+                updateListAndMap();
+            }
+            reloadDevices();
+        }
     }
+
+    private void populateBeamSensorItem() {
+
+        for (BeamSensor beamSensor : beamSensorList) {
+
+            for (int i = (beamSensorDataList.size() - 1) ; i>=0 ; i--) {
+                BeamSensorData beamSensorData = beamSensorDataList.get(i);
+                if (beamSensorData.getData().getUuid().equals(beamSensor.getUuid())) {
+                    for (BeamSensorItem beamSensorItem : beamSensor.getSchema()) {
+                        if (beamSensorItem.getId().equals(beamSensorData.getData().getSensorId())) {
+
+                            beamSensorItem.setStatus(beamSensorData.getData().getValue());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     @Override
     public void onBeamSensorDataFailed() {
-        loadBeamSensorData();
+        if (!isFinishing() && isRunning) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    checkRequestBeamDataCounter();
+
+                }
+            });
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        isRunning = true;
+        reloadDevices();
     }
 }

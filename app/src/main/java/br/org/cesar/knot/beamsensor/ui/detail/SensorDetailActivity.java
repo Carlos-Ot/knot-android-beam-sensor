@@ -45,7 +45,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
 
     private String mSearchUuid;
     private KnotQueryData mFilter;
-    private KnotQueryDateData mDateData;
+//    private KnotQueryDateData mDateData;
 
     private PreferencesManager preferencesManager;
 

@@ -719,14 +719,20 @@ final class KnotSocketIo {
                         List<T> result;
                         try {
                             JsonElement jsonElement = new JsonParser().parse(args[FIRST_EVENT_RECEIVED].toString());
-                            JsonObject jsonObject = jsonElement.getAsJsonObject();
 
-                            if (jsonObject.get(ERROR) != null && !jsonObject.get(ERROR).isJsonNull()) {
-                                callbackResult.onEventError(new KnotException(jsonObject.get(ERROR).toString()));
-                                return;
+                            JsonArray jsonArray;
+                            if (jsonElement.isJsonArray()) {
+                                jsonArray = jsonElement.getAsJsonArray();
+                            } else {
+                                JsonObject jsonObject = jsonElement.getAsJsonObject();
+
+                                if (jsonObject.get(ERROR) != null && !jsonObject.get(ERROR).isJsonNull()) {
+                                    callbackResult.onEventError(new KnotException(jsonObject.get(ERROR).toString()));
+                                    return;
+                                }
+
+                                jsonArray = jsonElement.getAsJsonObject().getAsJsonArray(DEVICES);
                             }
-
-                            JsonArray jsonArray = jsonElement.getAsJsonObject().getAsJsonArray(DEVICES);
 
                             if (jsonArray != null && jsonArray.size() > 0) {
                                 result = mGson.fromJson(jsonArray, typeThing);

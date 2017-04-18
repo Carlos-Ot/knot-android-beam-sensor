@@ -14,6 +14,7 @@ public class Constants {
     public static final String KEY_CLOUD_IP = "cloud_ip";
     public static final String KEY_CLOUD_PORT = "cloud_port";
     public static final String KEY_USERNAME = "username";
+    public static final String KEY_USE_CLOUD = "use_cloud";
 
     public static final String KEY_OWNER_UUID = "owner_uuid";
     public static final String KEY_OWNER_TOKEN = "owner_token";
@@ -21,7 +22,7 @@ public class Constants {
 
     public static final int INVALID_CLOUD_PORT = -1;
 
-    public static final int POOLING_TIMEOUT = 10000;
+    public static final int POOLING_TIMEOUT = 100000;
 
     public static final int FILTER_LIMIT = 20;
 

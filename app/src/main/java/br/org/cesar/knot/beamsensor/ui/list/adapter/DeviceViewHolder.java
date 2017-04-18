@@ -37,9 +37,8 @@ public class DeviceViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(BeamSensor beamSensor) {
         tvId.setText(beamSensor.getUuid());
-        if(beamSensor.getController() != null) {
-            tvDeviceLatLong.setText(String.valueOf(beamSensor.getController().getLatitude()) + ", " + beamSensor
-                    .getController().getLongitude());
+        if(beamSensor.getLatitude() != 0 && beamSensor.getLongitude() != 0) {
+            tvDeviceLatLong.setText(String.valueOf(beamSensor.getLatitude()) + ", " + beamSensor.getLongitude());
         }
         int textColor = android.R.color.holo_red_light;
         int iconColor = R.color.expanded_info_secondary_text_color;

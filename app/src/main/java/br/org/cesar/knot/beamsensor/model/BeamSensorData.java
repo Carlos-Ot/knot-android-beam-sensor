@@ -10,6 +10,8 @@ public class BeamSensorData extends AbstractThingData {
 
     private String value;
 
+    private int status;
+
     private String uuid;
 
     public String getId() {
@@ -42,5 +44,13 @@ public class BeamSensorData extends AbstractThingData {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

@@ -19,24 +19,29 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.controller.BeamController;
 import br.org.cesar.knot.beamsensor.data.local.PreferencesManager;
+import br.org.cesar.knot.beamsensor.data.networking.callback.BeamSensorDataCallback;
 import br.org.cesar.knot.beamsensor.data.networking.callback.DeviceListRequestCallback;
 import br.org.cesar.knot.beamsensor.data.networking.callback.GetOwnerCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
+import br.org.cesar.knot.beamsensor.model.BeamSensorData;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
 import br.org.cesar.knot.beamsensor.model.BeamSensorOwner;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.ListFragment;
 import br.org.cesar.knot.beamsensor.ui.list.fragment.MapFragment;
 import br.org.cesar.knot.beamsensor.util.Constants;
+import br.org.cesar.knot.lib.model.KnotQueryData;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DeviceListActivity extends AppCompatActivity implements DeviceListRequestCallback, GetOwnerCallback {
+public class DeviceListActivity extends AppCompatActivity implements DeviceListRequestCallback, GetOwnerCallback, BeamSensorDataCallback {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -58,7 +63,18 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
     private BeamSensorFilter mOwnerFilter = new BeamSensorFilter();
 
+    private BeamSensorFilter mDeviceCloudFilter = new BeamSensorFilter();
+
+
+    private KnotQueryData mDataFilter = new KnotQueryData();
+
+
     private boolean hasLoadedOwners = false;
+
+
+    private List<BeamSensor> beamSensorList;
+
+    private int requestDataSuccessCounter = 0;
 
 
     @Override
@@ -81,6 +97,14 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
         mOwnerFilter.add("user.email", preferencesManager.getUsername(), BeamSensorFilter.FilterCompareValueMode.Equal);
 
+        mDataFilter.setLimit(Constants.FILTER_LIMIT);
+
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put("*");
+        mDeviceCloudFilter.add("gateways", jsonArray, BeamSensorFilter.FilterCompareValueMode.Equal);
+
+        //first should request owner and save his token and uuid
         loadOwners();
 
         updateFragmentState();
@@ -92,9 +116,9 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
         isRunning = true;
 
-        if (hasLoadedOwners) {
-            reloadDevices();
-        }
+//        if (hasLoadedOwners) {
+//            reloadDevices();
+//        }
     }
 
     @Override
@@ -148,27 +172,9 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
     public void onDeviceListsSuccess(final List<BeamSensor> deviceList) {
 
         if (!isFinishing() && isRunning) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (deviceList != null && !deviceList.isEmpty()) {
-                        mapFragment.beamSensors = deviceList;
-                        mapFragment.updateDeviceList();
-
-                        ArrayList<BeamSensor> newBS = new ArrayList<>();
-                        for (BeamSensor bs : deviceList) {
-                            if (!bs.isBeamSensorOwner()) {
-                                newBS.add(bs);
-                            }
-                        }
-
-                        listFragment.updateDeviceList(newBS);
-
-                    }
-
-                    reloadDevices();
-                }
-            });
+            beamSensorList = deviceList;
+            //after get device list, get theirs data
+            loadBeamSensorData();
         }
 
     }
@@ -176,20 +182,41 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
     @Override
     public void onDeviceListFailed() {
 
+
         if (!isFinishing() && isRunning) {
+
+            reloadDevices();
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(DeviceListActivity.this, R.string.text_device_list_failed, Toast.LENGTH_SHORT).show();
 
-                    reloadDevices();
                 }
             });
         }
 
     }
 
+    private void updateListAndMap() {
+        if (beamSensorList != null && !beamSensorList.isEmpty()) {
+            mapFragment.beamSensors = beamSensorList;
+            mapFragment.updateDeviceList();
+
+            ArrayList<BeamSensor> newBS = new ArrayList<>();
+            for (BeamSensor bs : beamSensorList) {
+                if (!bs.isBeamSensorOwner()) {
+                    newBS.add(bs);
+                }
+            }
+            listFragment.updateDeviceList(newBS);
+
+        }
+
+    }
+
     private void reloadDevices() {
+
         if (!isFinishing()) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -211,7 +238,15 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
     private void loadDevices() {
         if (!isFinishing() && isRunning) {
-            BeamController.getInstance().getBeamDevices(new BeamSensorFilter(), this);
+
+            if (preferencesManager.getUseCloud()) {
+
+                BeamController.getInstance().getBeamDevices(mDeviceCloudFilter, this);
+
+            } else {
+
+                BeamController.getInstance().getBeamDevices(new BeamSensorFilter(), this);
+            }
         }
     }
 
@@ -257,9 +292,58 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
                 public void run() {
                     Toast.makeText(DeviceListActivity.this, R.string.text_owner_list_failed, Toast.LENGTH_SHORT).show();
 
-                    reloadDevices();
+                }
+            });
+            loadOwners();
+        }
+    }
+
+
+    private void loadBeamSensorData() {
+        if (!isFinishing() && isRunning) {
+            requestDataSuccessCounter = 0;
+
+            for (BeamSensor sensor : beamSensorList) {
+
+                BeamController.getInstance().getData(mDataFilter,
+                        preferencesManager.getOwnerUuid(),
+                        preferencesManager.getOwnerToken(),
+                        sensor.getUuid(), this);
+            }
+
+        }
+    }
+
+    @Override
+    public void onBeamSensorDataSuccess(final List<BeamSensorData> data) {
+//        beamSensorList.get(0).getSchema().
+        //set data in beamSensorItem
+        if (!isFinishing() && isRunning) {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    requestDataSuccessCounter++;
+                    if (requestDataSuccessCounter == beamSensorList.size()) {
+                        populateBeamSensorItem(data.get(0).getStatus());
+                        updateListAndMap();
+                        reloadDevices();
+                    }
+
+
                 }
             });
         }
+
+
+    }
+
+    private void populateBeamSensorItem(int status) {
+        beamSensorList.get(0).getSchema().get(0).setLatitude(status);
+    }
+
+    @Override
+    public void onBeamSensorDataFailed() {
+        loadBeamSensorData();
     }
 }

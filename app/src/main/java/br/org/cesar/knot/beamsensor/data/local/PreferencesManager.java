@@ -86,6 +86,14 @@ public class PreferencesManager {
         }
     }
 
+    public void setUseCloud(boolean useCloud) {
+
+        mSharedPreferences.edit().putBoolean(Constants.KEY_USE_CLOUD, useCloud).apply();
+    }
+
+    public boolean getUseCloud() {
+        return mSharedPreferences.getBoolean(Constants.KEY_USE_CLOUD, true);
+    }
 
 
 }

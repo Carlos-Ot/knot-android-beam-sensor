@@ -12,6 +12,8 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -20,7 +22,7 @@ import br.org.cesar.knot.beamsensor.data.local.PreferencesManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CloudSetupActivity extends AppCompatActivity implements View.OnClickListener{
+public class CloudSetupActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
 
     @BindView(R.id.ip_et)
@@ -34,6 +36,9 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.cb_cloud)
+    CheckBox cbCloud;
 
     private TextWatcher mCloudEmptyWatcher = new TextWatcher() {
         @Override
@@ -52,6 +57,8 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
 
     private InputFilter[] filters = new InputFilter[1];
 
+    private PreferencesManager mPreferencesManager = PreferencesManager.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,10 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
         edtPort.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
 
         edtIp.addTextChangedListener(mCloudEmptyWatcher);
+
+        cbCloud.setChecked(mPreferencesManager.getUseCloud());
+
+        cbCloud.setOnCheckedChangeListener(this);
 
         filters[0] = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -97,6 +108,9 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
         //TODO remover
         edtIp.setText("54.175.32.51");
         edtPort.setText("3000");
+
+
+
     }
 
     @Override
@@ -144,5 +158,11 @@ public class CloudSetupActivity extends AppCompatActivity implements View.OnClic
 
         Toast.makeText(CloudSetupActivity.this, getString(R.string.text_cloud_info_saved), Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+        mPreferencesManager.setUseCloud(b);
     }
 }

@@ -7,16 +7,17 @@ import java.util.ArrayList;
 import br.org.cesar.knot.lib.model.AbstractThingDevice;
 
 public class BeamSensor extends AbstractThingDevice {
+
     private boolean online;
     @SerializedName("_id")
     private String id;
     private String ipAddress;
-    @SerializedName("leftFence")
-    private BeamSensorItem leftFence;
-    @SerializedName("controller")
-    private BeamSensorItem controller;
-    @SerializedName("rightFence")
-    private BeamSensorItem rightFence;
+    @SerializedName("latitude")
+    private double latitude;
+    @SerializedName("longitude")
+    private double longitude;
+//    @SerializedName("schema")
+    private ArrayList<BeamSensorItem> schema;
     @SerializedName("user")
     private BeamSensorOwner beamSensorOwner;
 
@@ -55,43 +56,18 @@ public class BeamSensor extends AbstractThingDevice {
         return online;
     }
 
-    public BeamSensorItem getController() {
-        return controller;
-    }
-
-    public void setController(BeamSensorItem controller) {
-        this.controller = controller;
-    }
-
-    public BeamSensorItem getRightFence() {
-        return rightFence;
-    }
-
-    public void setRightFence(BeamSensorItem rightFence) {
-        this.rightFence = rightFence;
-    }
-
-    public BeamSensorItem getLeftFence() {
-        return leftFence;
-    }
-
-    public void setLeftFence(BeamSensorItem leftFence) {
-        this.leftFence = leftFence;
-    }
 
     public ArrayList<BeamSensorItem> getBeamSensorItens() {
 
         ArrayList<BeamSensorItem> beamSensorItemArrayList = new ArrayList<>();
 
-        if (controller == null) return beamSensorItemArrayList;
-
-        if (leftFence != null) {
-            beamSensorItemArrayList.add(leftFence);
-        }
-
-        if (rightFence != null) {
-            beamSensorItemArrayList.add(rightFence);
-        }
+//        if (leftFence != null) {
+//            beamSensorItemArrayList.add(leftFence);
+//        }
+//
+//        if (rightFence != null) {
+//            beamSensorItemArrayList.add(rightFence);
+//        }
 
         return beamSensorItemArrayList;
     }
@@ -104,4 +80,28 @@ public class BeamSensor extends AbstractThingDevice {
         return this.beamSensorOwner;
     }
 
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public ArrayList<BeamSensorItem> getSchema() {
+        return schema;
+    }
+
+    public void setSchema(ArrayList<BeamSensorItem> schema) {
+        this.schema = schema;
+    }
 }

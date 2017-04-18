@@ -10,10 +10,25 @@
 package br.org.cesar.knot.beamsensor.model;
 
 
+import com.google.gson.annotations.SerializedName;
+
 public class BeamSensorItem {
+
+    @SerializedName("sensor_id")
     private int id;
+    @SerializedName("value_type")
+    private int valueType;
+    @SerializedName("unit")
+    private int unit;
+    @SerializedName("type_id")
+    private int typeId;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("latitude")
     private double latitude;
+    @SerializedName("longitude")
     private double longitude;
+
     private int status;
 
     public double getLatitude() {
@@ -30,6 +45,46 @@ public class BeamSensorItem {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(int valueType) {
+        this.valueType = valueType;
+    }
+
+    public int getUnit() {
+        return unit;
+    }
+
+    public void setUnit(int unit) {
+        this.unit = unit;
+    }
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getStatus() {

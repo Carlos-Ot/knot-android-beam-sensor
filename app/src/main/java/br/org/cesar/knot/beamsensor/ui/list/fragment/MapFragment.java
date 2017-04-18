@@ -102,19 +102,19 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         if (isOnline) {
             googleMap.addMarker(new MarkerOptions().icon(Utils.vectorToBitmap(R.drawable.ic_sensor_active, getResources()))
-                    .position(getCoordinate(father.getController()))).setTag(index);
+                    .position(new LatLng(father.getLatitude(), father.getLongitude()))).setTag(index);
         } else {
             googleMap.addMarker(new MarkerOptions().icon(Utils.vectorToBitmap(R.drawable.ic_sensor_inactive, getResources()))
-                    .position(getCoordinate(father.getController()))).setTag(index);
+                    .position(new LatLng(father.getLatitude(), father.getLongitude()))).setTag(index);
         }
         //add controller marker
-        builder.include(getCoordinate(father.getController()));
+        builder.include(new LatLng(father.getLatitude(), father.getLongitude()));
 
         ArrayList<LatLng> latLngList = new ArrayList<>();
 
         for (BeamSensorItem beamSensorItem : father.getBeamSensorItens()) {
             latLngList.clear();
-            latLngList.addAll(createVertex(getCoordinate(father.getController()), getCoordinate(beamSensorItem)));
+            latLngList.addAll(createVertex(new LatLng(father.getLatitude(), father.getLongitude()), getCoordinate(beamSensorItem)));
 
             if (isOnline) {
                 if (beamSensorItem.getStatus() == FENCY_VIOLATED) {

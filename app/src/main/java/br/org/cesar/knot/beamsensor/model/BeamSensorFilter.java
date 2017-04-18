@@ -68,7 +68,7 @@ public class BeamSensorFilter {
         items = new ArrayList<>();
     }
 
-    public <T> void build(String name,T value,FilterCompareValueMode compareValueMode){
+    public <T> void add(String name, T value, FilterCompareValueMode compareValueMode){
         FilterItem filterItem = new FilterItem();
         Map<String, T> map = new HashMap<String, T>();
         map.put(name,value);
@@ -77,8 +77,8 @@ public class BeamSensorFilter {
         items.add(filterItem);
     }
 
-    public <T,Z> void build(String param1,T paramValue1,FilterCompareValueMode compareValueMode1,FilterLinkType siblingLinkType,
-                            String param2,Z paramValue2,FilterCompareValueMode compareValueMode2){
+    public <T,Z> void add(String param1, T paramValue1, FilterCompareValueMode compareValueMode1, FilterLinkType siblingLinkType,
+                          String param2, Z paramValue2, FilterCompareValueMode compareValueMode2){
 
         FilterItem filterItem = new FilterItem();
         Map<String, T> leftMap = new HashMap<>();

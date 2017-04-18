@@ -9,6 +9,7 @@ import java.util.List;
 import br.org.cesar.knot.beamsensor.data.networking.callback.AuthenticateRequestCallback;
 import br.org.cesar.knot.beamsensor.data.networking.callback.BeamSensorDataCallback;
 import br.org.cesar.knot.beamsensor.data.networking.callback.DeviceListRequestCallback;
+import br.org.cesar.knot.beamsensor.data.networking.callback.GetOwnerCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorData;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
@@ -133,6 +134,37 @@ public class WsBeamCommunication {
 
             if (callback != null) {
                 callback.onDeviceListFailed();
+            }
+        }
+    }
+
+    public void getOwners(BeamSensorFilter filter, final GetOwnerCallback callback) {
+
+        try {
+            KnotList<BeamSensor> list = new KnotList<>(BeamSensor.class);
+            connection.socketIOGetDeviceList(list, filter.getQuery(), new Event<List<BeamSensor>>() {
+
+                @Override
+                public void onEventFinish(List<BeamSensor> object) {
+
+                    if (callback != null) {
+                        callback.onGetOwnerSuccess(object);
+                    }
+                }
+
+                @Override
+                public void onEventError(Exception e) {
+
+                    if (callback != null) {
+                        callback.onGetOwnerFailed();
+                    }
+                }
+            });
+        } catch (JSONException | KnotException | SocketNotConnected | InvalidParametersException e) {
+            e.printStackTrace();
+
+            if (callback != null) {
+                callback.onGetOwnerFailed();
             }
         }
     }

@@ -4,6 +4,7 @@ import br.org.cesar.knot.beamsensor.communication.WsBeamCommunication;
 import br.org.cesar.knot.beamsensor.data.networking.callback.AuthenticateRequestCallback;
 import br.org.cesar.knot.beamsensor.data.networking.callback.BeamSensorDataCallback;
 import br.org.cesar.knot.beamsensor.data.networking.callback.DeviceListRequestCallback;
+import br.org.cesar.knot.beamsensor.data.networking.callback.GetOwnerCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
 import br.org.cesar.knot.lib.model.KnotQueryData;
 
@@ -33,6 +34,10 @@ public class BeamController {
 
     public void getBeamDevices(BeamSensorFilter filter, DeviceListRequestCallback callback) {
         mCommunication.getDevices(filter, callback);
+    }
+
+    public void getOwnerDevices(BeamSensorFilter filter, GetOwnerCallback callback) {
+        mCommunication.getOwners(filter, callback);
     }
 
     public void authenticate(String url, int port, String user, String password, AuthenticateRequestCallback callback) {

@@ -6,6 +6,7 @@
 
     <string name="text_beam_sensor_data_failed">Beam Sensor data failed!</string>
     <string name="text_device_list_failed">Device list could not be loaded!</string>
+    <string name="text_owner_list_failed">Owner list could not be loaded!</string>
 
     <string name="title_login">Login</string>
     <string name="title_setup">Setup Cloud</string>

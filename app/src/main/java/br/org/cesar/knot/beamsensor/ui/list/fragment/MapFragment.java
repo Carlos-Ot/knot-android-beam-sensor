@@ -29,7 +29,6 @@ import br.org.cesar.knot.beamsensor.model.BeamSensorItem;
 import br.org.cesar.knot.beamsensor.ui.detail.SensorDetailActivity;
 import br.org.cesar.knot.beamsensor.util.Utils;
 
-
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
 
     public static final int FENCY_ACTIVE = 1;
@@ -76,13 +75,15 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public void updateDeviceList() {
 
         //only populate map if googleMap is running
-        if (googleMap == null || beamSensors.size() == 0) return;
+        if (googleMap == null || beamSensors.size() == 0
+                || (beamSensors.size() == 1 && beamSensors.get(0).isBeamSensorOwner())) return;
 
         // clear old markers
         googleMap.clear();
         for (Polyline p : polylineList) {
             p.remove();
         }
+
         polylineList.clear();
         builder = new LatLngBounds.Builder();
 
@@ -92,8 +93,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             }
 
         }
-        setCameraPosition();
 
+        setCameraPosition();
     }
 
     private void createLine(BeamSensor father, int index) {
@@ -141,6 +142,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     private void setCameraPosition() {
         if (!shouldSetCamera) return;
+
         int width = getResources().getDisplayMetrics().widthPixels;
         int padding = (int) (width * 0.20);
         CameraUpdate camera = CameraUpdateFactory.newLatLngBounds(builder.build(), padding);

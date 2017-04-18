@@ -26,6 +26,7 @@ import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.controller.BeamController;
 import br.org.cesar.knot.beamsensor.data.local.PreferencesManager;
 import br.org.cesar.knot.beamsensor.data.networking.callback.DeviceListRequestCallback;
+import br.org.cesar.knot.beamsensor.data.networking.callback.GetOwnerCallback;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorFilter;
 import br.org.cesar.knot.beamsensor.model.BeamSensorOwner;
@@ -35,7 +36,7 @@ import br.org.cesar.knot.beamsensor.util.Constants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DeviceListActivity extends AppCompatActivity implements DeviceListRequestCallback {
+public class DeviceListActivity extends AppCompatActivity implements DeviceListRequestCallback, GetOwnerCallback {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -54,6 +55,10 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
     private PreferencesManager preferencesManager;
 
     private boolean isRunning = false;
+
+    private BeamSensorFilter mOwnerFilter = new BeamSensorFilter();
+
+    private boolean hasLoadedOwners = false;
 
 
     @Override
@@ -74,6 +79,10 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
         mapFragment = MapFragment.newInstance();
         listFragment = ListFragment.newInstance();
 
+        mOwnerFilter.add("user.email", preferencesManager.getUsername(), BeamSensorFilter.FilterCompareValueMode.Equal);
+
+        loadOwners();
+
         updateFragmentState();
     }
 
@@ -82,7 +91,10 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
         super.onResume();
 
         isRunning = true;
-        loadDevices();
+
+        if (hasLoadedOwners) {
+            reloadDevices();
+        }
     }
 
     @Override
@@ -145,15 +157,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
                         ArrayList<BeamSensor> newBS = new ArrayList<>();
                         for (BeamSensor bs : deviceList) {
-                            if (bs.isBeamSensorOwner()) {
-                                BeamSensorOwner beamSensorOwner = bs.getBeamSensorOwner();
-                                String ownerUuid = beamSensorOwner.getUuid();
-                                String ownerToken = beamSensorOwner.getToken();
-
-                                //we are assuming there is only one owner
-                                preferencesManager.setOwnerToken(ownerToken);
-                                preferencesManager.setOwnerUuid(ownerUuid);
-                            } else {
+                            if (!bs.isBeamSensorOwner()) {
                                 newBS.add(bs);
                             }
                         }
@@ -199,10 +203,63 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
     }
 
 
+    private void loadOwners() {
+        if (!isFinishing()) {
+            BeamController.getInstance().getOwnerDevices(mOwnerFilter, this);
+        }
+    }
+
     private void loadDevices() {
         if (!isFinishing() && isRunning) {
             BeamController.getInstance().getBeamDevices(new BeamSensorFilter(), this);
         }
     }
 
+    @Override
+    public void onGetOwnerSuccess(final List<BeamSensor> ownerList) {
+
+        if (!isFinishing() && isRunning) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (ownerList != null && !ownerList.isEmpty()) {
+
+                        // There can be only one <o>
+                        for (BeamSensor bs : ownerList) {
+                            if (bs.isBeamSensorOwner()) {
+                                BeamSensorOwner beamSensorOwner = bs.getBeamSensorOwner();
+                                String ownerUuid = beamSensorOwner.getUuid();
+                                String ownerToken = beamSensorOwner.getToken();
+
+                                //we are assuming there is only one owner
+                                preferencesManager.setOwnerToken(ownerToken);
+                                preferencesManager.setOwnerUuid(ownerUuid);
+
+                                hasLoadedOwners = true;
+                                break;
+                            }
+                        }
+
+                        loadDevices();
+                    }
+                }
+            });
+        }
+
+    }
+
+    @Override
+    public void onGetOwnerFailed() {
+
+        if (!isFinishing() && isRunning) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(DeviceListActivity.this, R.string.text_owner_list_failed, Toast.LENGTH_SHORT).show();
+
+                    reloadDevices();
+                }
+            });
+        }
+    }
 }

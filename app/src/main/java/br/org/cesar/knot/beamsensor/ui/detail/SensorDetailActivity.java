@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
@@ -23,18 +23,19 @@ import br.org.cesar.knot.beamsensor.ui.detail.adapter.DataAdapter;
 import br.org.cesar.knot.beamsensor.util.Constants;
 import br.org.cesar.knot.beamsensor.util.Utils;
 import br.org.cesar.knot.lib.model.KnotQueryData;
-import br.org.cesar.knot.lib.model.KnotQueryDateData;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SensorDetailActivity extends AppCompatActivity implements BeamSensorDataCallback {
 
     private static final String EXTRA_UUID = "uuid";
+    private static final String EXTRA_HASHMAP = "hashmap";
 
-    public static Intent newIntent(Context context, String uuid) {
+    public static Intent newIntent(Context context, String uuid, HashMap<String, String> map) {
 
         Intent it = new Intent(context, SensorDetailActivity.class);
         it.putExtra(EXTRA_UUID, uuid);
+        it.putExtra(EXTRA_HASHMAP, map);
         return it;
     }
 
@@ -44,8 +45,9 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
     RecyclerView recyclerView;
 
     private String mSearchUuid;
+    private HashMap<String, String> mMap;
+
     private KnotQueryData mFilter;
-//    private KnotQueryDateData mDateData;
 
     private PreferencesManager preferencesManager;
 
@@ -69,13 +71,14 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
 
         preferencesManager = PreferencesManager.getInstance();
 
+        mSearchUuid = getIntent().getStringExtra(EXTRA_UUID);
+
+        mMap = (HashMap<String, String>)getIntent().getSerializableExtra(EXTRA_HASHMAP);
+
         initRecyclerView();
 
         mFilter = new KnotQueryData();
         mFilter.setLimit(Constants.FILTER_LIMIT);
-
-        mSearchUuid = getIntent().getStringExtra(EXTRA_UUID);
-
     }
 
     private void initRecyclerView() {
@@ -148,12 +151,14 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
     }
 
     private void updateDataList(List<BeamSensorData> data) {
+
+        for (BeamSensorData beamSensorData: data) {
+            beamSensorData.getData().setName(mMap.get(beamSensorData.getData().getSensorId()));
+            beamSensorData.getData().setDate(Utils.convertDate(beamSensorData.getTimestamp()));
+        }
+
         mAdapter.updateData(data);
         mAdapter.notifyDataSetChanged();
-    }
-
-    private BeamSensorData getLastData() {
-        return mAdapter.getLastData();
     }
 
     private void reloadData() {
@@ -162,7 +167,6 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
                 @Override
                 public void run() {
                     if (!isFinishing()) {
-//                        updateQueryDate();
                         loadBeamSensorData();
                     }
                 }
@@ -180,59 +184,4 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
         }
     }
 
-    private void updateQueryDate() {
-
-        if (mFilter != null) {
-
-//            Calendar calendar = Calendar.getInstance();
-
-//            boolean isFirstTime = (mDateData == null);
-
-            Calendar lastDataCalendar = Utils.loadNextDateFromHistory(getLastData());
-
-            if (lastDataCalendar != null) {
-                KnotQueryDateData previous = new KnotQueryDateData(lastDataCalendar.get(Calendar.YEAR),
-                        lastDataCalendar.get(Calendar.MONTH),
-                        lastDataCalendar.get(Calendar.DAY_OF_MONTH),
-                        lastDataCalendar.get(Calendar.HOUR),
-                        lastDataCalendar.get(Calendar.MINUTE),
-                        lastDataCalendar.get(Calendar.SECOND),
-                        lastDataCalendar.get(Calendar.MILLISECOND));
-
-                mFilter.setStartDate(previous);
-            }
-
-
-//            if (!isFirstTime) {
-//                mFilter.setStartDate(mDateData);
-//            }
-//
-//            mDateData = new KnotQueryDateData(calendar.get(Calendar.YEAR),
-//                    calendar.get(Calendar.MONTH),
-//                    calendar.get(Calendar.DAY_OF_MONTH),
-//                    calendar.get(Calendar.HOUR),
-//                    calendar.get(Calendar.MINUTE),
-//                    calendar.get(Calendar.SECOND),
-//                    calendar.get(Calendar.MILLISECOND));
-//
-//            mFilter.setFinishDate(mDateData);
-//
-//            if (isFirstTime) {
-//
-//                calendar.add(Calendar.SECOND, (-1 * Constants.POOLING_TIMEOUT));
-//
-//                KnotQueryDateData previous = new KnotQueryDateData(calendar.get(Calendar.YEAR),
-//                        calendar.get(Calendar.MONTH),
-//                        calendar.get(Calendar.DAY_OF_MONTH),
-//                        calendar.get(Calendar.HOUR),
-//                        calendar.get(Calendar.MINUTE),
-//                        calendar.get(Calendar.SECOND),
-//                        calendar.get(Calendar.MILLISECOND));
-//
-//                mFilter.setStartDate(previous);
-//
-//            }
-
-        }
-    }
 }

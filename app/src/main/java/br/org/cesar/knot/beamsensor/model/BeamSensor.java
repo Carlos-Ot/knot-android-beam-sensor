@@ -16,7 +16,7 @@ public class BeamSensor extends AbstractThingDevice {
     private double latitude;
     @SerializedName("longitude")
     private double longitude;
-//    @SerializedName("schema")
+    @SerializedName("schema")
     private ArrayList<BeamSensorItem> schema;
     @SerializedName("user")
     private BeamSensorOwner beamSensorOwner;

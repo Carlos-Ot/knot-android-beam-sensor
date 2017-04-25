@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 
-public class BeanSensorApplication extends Application {
+public class BeamSensorApplication extends Application {
 
 
     private static Context sContext;

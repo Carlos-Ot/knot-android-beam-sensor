@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
@@ -165,8 +166,20 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public boolean onMarkerClick(Marker marker) {
         Integer position = (Integer) marker.getTag();
         if (position != null) {
-            startActivityForResult(SensorDetailActivity.newIntent(getContext(), beamSensors.get(position).getUuid()), 1);
+
+            HashMap<String, String> map = new HashMap<>();
+
+            BeamSensor beamSensor = beamSensors.get(position);
+
+            List<BeamSensorItem> sensors =  beamSensor.getSchema();
+
+            for (BeamSensorItem item : sensors) {
+                map.put(item.getId(), item.getName());
+            }
+
+            startActivityForResult(SensorDetailActivity.newIntent(getContext(), beamSensor.getUuid(), map), 1);
         }
+
         return true;
     }
 }

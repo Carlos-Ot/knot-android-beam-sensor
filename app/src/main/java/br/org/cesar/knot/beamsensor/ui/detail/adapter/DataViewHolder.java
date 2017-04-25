@@ -28,10 +28,10 @@ public class DataViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(BeamSensorData beamSensorData) {
 
-        tvDataUuid.setText(beamSensorData.getData().getSensorId());
+        tvDataUuid.setText(beamSensorData.getData().getName());
 
-        tvDataTimestamp.setText(beamSensorData.getTimestamp());
+        tvDataTimestamp.setText(beamSensorData.getData().getDate());
 
-        tvDataStatus.setText(beamSensorData.getData().getValue() ? "Normal" : "Violated");
+        tvDataStatus.setText(beamSensorData.getData().getValue() ? "Regular" : "Violated");
     }
 }

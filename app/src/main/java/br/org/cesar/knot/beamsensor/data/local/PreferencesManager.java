@@ -3,7 +3,7 @@ package br.org.cesar.knot.beamsensor.data.local;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import br.org.cesar.knot.beamsensor.BeanSensorApplication;
+import br.org.cesar.knot.beamsensor.BeamSensorApplication;
 import br.org.cesar.knot.beamsensor.util.Constants;
 
 public class PreferencesManager {
@@ -14,7 +14,7 @@ public class PreferencesManager {
 
     private PreferencesManager() {
 
-        Context context = BeanSensorApplication.getContext();
+        Context context = BeamSensorApplication.getContext();
 
         mSharedPreferences = context.getSharedPreferences(
                 Constants.PREFERENCES, Context.MODE_PRIVATE);

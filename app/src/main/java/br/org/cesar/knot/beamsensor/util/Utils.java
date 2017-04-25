@@ -13,7 +13,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import br.org.cesar.knot.beamsensor.model.BeamSensorData;
 
@@ -53,6 +55,29 @@ public final class Utils {
         }
 
         return calendar;
+    }
+
+
+    public static String convertDate(String zDate) {
+        String convertedDate = zDate;
+
+        try {
+            String output = zDate.replace("T", " ").replace("Z", "");
+            //2017-04-17T16:48:29.172Z
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            Date date = sdf.parse(output);
+
+            SimpleDateFormat outputFormat =
+                    new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
+
+            convertedDate = outputFormat.format(date);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return convertedDate;
     }
 
 }

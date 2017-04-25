@@ -10,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
+import br.org.cesar.knot.beamsensor.model.BeamSensorItem;
 import br.org.cesar.knot.beamsensor.ui.detail.SensorDetailActivity;
 import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceAdapter;
 import butterknife.BindView;
@@ -65,7 +68,16 @@ public class ListFragment extends Fragment implements DeviceAdapter.ItemClickLis
 
     @Override
     public void onClick(BeamSensor beamSensor) {
-        startActivityForResult(SensorDetailActivity.newIntent(getContext(), beamSensor.getUuid()), 1);
+
+        HashMap<String, String> map = new HashMap<>();
+
+        List<BeamSensorItem> sensors =  beamSensor.getSchema();
+
+        for (BeamSensorItem item : sensors) {
+            map.put(item.getId(), item.getName());
+        }
+
+        startActivityForResult(SensorDetailActivity.newIntent(getContext(), beamSensor.getUuid(), map), 1);
     }
 
 }

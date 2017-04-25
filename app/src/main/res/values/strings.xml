@@ -22,6 +22,8 @@
     <string name="activity_login_password_error">Invalid password</string>
     <string name="text_authentication_failed">Authentication failed!</string>
 
+    <!-- DeviceList Activity -->
+    <string name="activity_device_list_click_to_finish"> Clique novamente para fechar</string>
 
 
 

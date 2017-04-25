@@ -21,6 +21,7 @@ import br.org.cesar.knot.beamsensor.data.networking.callback.BeamSensorDataCallb
 import br.org.cesar.knot.beamsensor.model.BeamSensorData;
 import br.org.cesar.knot.beamsensor.ui.detail.adapter.DataAdapter;
 import br.org.cesar.knot.beamsensor.util.Constants;
+import br.org.cesar.knot.beamsensor.util.CustomProgressDialog;
 import br.org.cesar.knot.beamsensor.util.Utils;
 import br.org.cesar.knot.lib.model.KnotQueryData;
 import butterknife.BindView;
@@ -30,6 +31,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
 
     private static final String EXTRA_UUID = "uuid";
     private static final String EXTRA_HASHMAP = "hashmap";
+    private CustomProgressDialog mProgressDialog;
 
     public static Intent newIntent(Context context, String uuid, HashMap<String, String> map) {
 
@@ -66,6 +68,8 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
         mToolbar.setTitle(R.string.title_data);
         setSupportActionBar(mToolbar);
 
+        mProgressDialog = new CustomProgressDialog(this);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -79,6 +83,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
 
         mFilter = new KnotQueryData();
         mFilter.setLimit(Constants.FILTER_LIMIT);
+        mProgressDialog.show();
     }
 
     private void initRecyclerView() {
@@ -116,6 +121,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
 
     @Override
     public void onBeamSensorDataSuccess(final List<BeamSensorData> data) {
+        mProgressDialog.dismiss();
 
         if (!isFinishing() && isRunning) {
             if (data != null && !data.isEmpty()) {
@@ -136,6 +142,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
 
     @Override
     public void onBeamSensorDataFailed() {
+        mProgressDialog.dismiss();
 
         if (!isFinishing()) {
             runOnUiThread(new Runnable() {
@@ -177,6 +184,7 @@ public class SensorDetailActivity extends AppCompatActivity implements BeamSenso
 
     private void loadBeamSensorData() {
         if (!isFinishing() && isRunning) {
+
             beamController.getData(mFilter,
                     preferencesManager.getOwnerUuid(),
                     preferencesManager.getOwnerToken(),

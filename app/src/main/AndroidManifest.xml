@@ -24,6 +24,7 @@
         <activity
             android:name="br.org.cesar.knot.beamsensor.ui.login.LoginActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

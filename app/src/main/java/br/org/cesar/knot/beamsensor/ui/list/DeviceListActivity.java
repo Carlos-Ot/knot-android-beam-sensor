@@ -78,6 +78,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
     private List<BeamSensorData> beamSensorDataList = new ArrayList<>();
 
     private int requestDataCounter = 0;
+    private boolean shouldFinish = false;
 
 
     @Override
@@ -139,7 +140,19 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            if (isShowingMap) {
+                if (!shouldFinish) {
+                    Toast.makeText(this, R.string.activity_device_list_click_to_finish, Toast.LENGTH_LONG).show();
+                    shouldFinish = true;
+                } else {
+                    finish();
+                }
+            } else {
+                this.isShowingMap = true;
+                updateFragmentState();
+            }
+
+
         } else {
             this.isShowingMap = !this.isShowingMap;
             updateFragmentState();
@@ -149,6 +162,8 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
     }
 
     private void updateFragmentState() {
+
+        shouldFinish = false;
 
         if (this.isShowingMap) {
 
@@ -347,7 +362,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
         for (BeamSensor beamSensor : beamSensorList) {
 
-            for (int i = (beamSensorDataList.size() - 1) ; i>=0 ; i--) {
+            for (int i = (beamSensorDataList.size() - 1); i >= 0; i--) {
                 BeamSensorData beamSensorData = beamSensorDataList.get(i);
                 if (beamSensorData.getData().getUuid().equals(beamSensor.getUuid())) {
                     for (BeamSensorItem beamSensorItem : beamSensor.getSchema()) {
@@ -382,5 +397,11 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
         super.onActivityResult(requestCode, resultCode, data);
         isRunning = true;
         reloadDevices();
+    }
+
+    public void setToolbarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
     }
 }

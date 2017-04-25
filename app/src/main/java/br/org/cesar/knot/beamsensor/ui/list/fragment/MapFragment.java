@@ -28,12 +28,11 @@ import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorItem;
 import br.org.cesar.knot.beamsensor.ui.detail.SensorDetailActivity;
+import br.org.cesar.knot.beamsensor.ui.list.DeviceListActivity;
 import br.org.cesar.knot.beamsensor.util.Utils;
 
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
 
-    public static final int FENCY_ACTIVE = 1;
-    public static final int FENCY_VIOLATED = 0;
     private GoogleMap googleMap;
     public List<BeamSensor> beamSensors;
     private LatLngBounds.Builder builder;
@@ -51,6 +50,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         SupportMapFragment smf = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+
+        ((DeviceListActivity)getActivity()).setToolbarTitle("Device Map");
 
         smf.getMapAsync(new OnMapReadyCallback() {
             @Override

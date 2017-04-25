@@ -17,6 +17,7 @@ import br.org.cesar.knot.beamsensor.R;
 import br.org.cesar.knot.beamsensor.model.BeamSensor;
 import br.org.cesar.knot.beamsensor.model.BeamSensorItem;
 import br.org.cesar.knot.beamsensor.ui.detail.SensorDetailActivity;
+import br.org.cesar.knot.beamsensor.ui.list.DeviceListActivity;
 import br.org.cesar.knot.beamsensor.ui.list.adapter.DeviceAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +46,8 @@ public class ListFragment extends Fragment implements DeviceAdapter.ItemClickLis
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, view);
+
+        ((DeviceListActivity)getActivity()).setToolbarTitle("Device List");
 
         initRecyclerView();
         if (beamSensors != null && !beamSensors.isEmpty()) {

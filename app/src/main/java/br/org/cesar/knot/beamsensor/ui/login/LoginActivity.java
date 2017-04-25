@@ -1,5 +1,6 @@
 package br.org.cesar.knot.beamsensor.ui.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ import br.org.cesar.knot.beamsensor.data.local.PreferencesManager;
 import br.org.cesar.knot.beamsensor.data.networking.callback.AuthenticateRequestCallback;
 import br.org.cesar.knot.beamsensor.ui.list.DeviceListActivity;
 import br.org.cesar.knot.beamsensor.util.Constants;
+import br.org.cesar.knot.beamsensor.util.CustomProgressDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -42,6 +45,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
     private PreferencesManager mPreferencesManager;
 
     private BeamController mBeamController;
+    private CustomProgressDialog mProgressDialog;
 
     private TextWatcher mCredentialsEmptyWatcher = new TextWatcher() {
         @Override
@@ -65,6 +69,8 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         ButterKnife.bind(this);
         toolbar.setTitle(R.string.activity_login_title);
         setSupportActionBar(toolbar);
+
+        mProgressDialog = new CustomProgressDialog(this);
 
         mPreferencesManager = PreferencesManager.getInstance();
 
@@ -130,6 +136,11 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
 
     @OnClick(R.id.btn_sign_in)
     void performLogin() {
+        InputMethodManager imm = (InputMethodManager) this
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+
+        mProgressDialog.show();
 
         if (validateCloudInfo()) {
 
@@ -155,6 +166,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
 
     @Override
     public void onAuthenticateSuccess() {
+        mProgressDialog.dismiss();
 
         mPreferencesManager.setUsername(mUsernameEditText.getText().toString());
 
@@ -163,6 +175,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
 
     @Override
     public void onAuthenticateFailed() {
+        mProgressDialog.dismiss();
 
         runOnUiThread(new Runnable() {
             @Override

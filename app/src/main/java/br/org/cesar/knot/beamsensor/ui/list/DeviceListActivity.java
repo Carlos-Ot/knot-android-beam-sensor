@@ -140,6 +140,10 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
                     Toast.makeText(this, R.string.activity_device_list_click_to_finish, Toast.LENGTH_LONG).show();
                     shouldFinish = true;
                 } else {
+
+                    if (BeamController.getInstance() != null) {
+                        BeamController.getInstance().disconnect();
+                    }
                     finish();
                 }
             } else {

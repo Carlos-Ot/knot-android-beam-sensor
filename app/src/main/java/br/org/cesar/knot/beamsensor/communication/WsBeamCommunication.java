@@ -73,8 +73,11 @@ public class WsBeamCommunication {
     }
 
     public boolean close() {
-        connection.disconnectSocket();
-        return connection.isSocketConnected();
+        if(connection != null) {
+            connection.disconnectSocket();
+            return connection.isSocketConnected();
+        }
+        return true;
     }
 
     private String getEndpoint(String url, int port) throws URISyntaxException {

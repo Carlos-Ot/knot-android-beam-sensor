@@ -49,4 +49,8 @@ public class BeamController {
 
     }
 
+    public void disconnect() {
+        mCommunication.close();
+    }
+
 }

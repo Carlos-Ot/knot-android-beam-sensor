@@ -47,6 +47,8 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
     private BeamController mBeamController;
     private CustomProgressDialog mProgressDialog;
 
+    private Toast mToast;
+
     private TextWatcher mCredentialsEmptyWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -74,6 +76,8 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
 
         mPreferencesManager = PreferencesManager.getInstance();
 
+        mToast = Toast.makeText(LoginActivity.this, R.string.text_authentication_failed, Toast.LENGTH_SHORT);
+
         mUsernameEditText.addTextChangedListener(mCredentialsEmptyWatcher);
         mPasswordEditText.addTextChangedListener(mCredentialsEmptyWatcher);
 
@@ -83,10 +87,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
                 !mPreferencesManager.getUsername().isEmpty()) {
             mUsernameEditText.setText(mPreferencesManager.getUsername());
         }
-
-        //TODO remover
-//        mUsernameEditText.setText("knot-teste");
-//        mPasswordEditText.setText("knot");
 
     }
 
@@ -180,7 +180,10 @@ public class LoginActivity extends AppCompatActivity implements AuthenticateRequ
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(LoginActivity.this, R.string.text_authentication_failed, Toast.LENGTH_SHORT).show();
+                if (mToast.getView().isShown()) {
+                    mToast.cancel();
+                }
+                mToast.show();
             }
         });
     }

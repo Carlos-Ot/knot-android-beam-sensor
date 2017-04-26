@@ -67,12 +67,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
     private BeamSensorFilter mDeviceCloudFilter = new BeamSensorFilter();
 
-
     private KnotQueryData mDataFilter = new KnotQueryData();
-
-
-    private boolean hasLoadedOwners = false;
-
 
     private List<BeamSensor> beamSensorList;
     private List<BeamSensorData> beamSensorDataList = new ArrayList<>();
@@ -213,37 +208,24 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
 
     }
 
-    private void updateListAndMap() {
-        if (beamSensorList != null && !beamSensorList.isEmpty()) {
-            mapFragment.beamSensors = beamSensorList;
-            mapFragment.updateDeviceList();
-
-            ArrayList<BeamSensor> newBS = new ArrayList<>();
-            for (BeamSensor bs : beamSensorList) {
-                if (!bs.isBeamSensorOwner()) {
-                    newBS.add(bs);
-                }
-            }
-            listFragment.updateDeviceList(newBS);
-
-        }
-
-    }
-
     private void reloadDevices() {
 
         if (!isFinishing()) {
-            new Handler().postDelayed(new Runnable() {
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (!isFinishing()) {
-                        loadDevices();
-                    }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!isFinishing()) {
+                                loadDevices();
+                            }
+                        }
+                    }, Constants.POOLING_TIMEOUT);
                 }
-            }, Constants.POOLING_TIMEOUT);
+            });
         }
     }
-
 
     private void loadOwners() {
         if (!isFinishing()) {
@@ -285,7 +267,6 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
                                 preferencesManager.setOwnerToken(ownerToken);
                                 preferencesManager.setOwnerUuid(ownerUuid);
 
-                                hasLoadedOwners = true;
                                 break;
                             }
                         }
@@ -337,7 +318,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    beamSensorDataList = data;
+                    beamSensorDataList.addAll(data);
                     checkRequestBeamDataCounter();
 
                 }
@@ -354,6 +335,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
                 populateBeamSensorItem();
                 updateListAndMap();
             }
+
             reloadDevices();
         }
     }
@@ -375,6 +357,23 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListR
                 }
             }
         }
+    }
+
+    private void updateListAndMap() {
+        if (beamSensorList != null && !beamSensorList.isEmpty()) {
+            mapFragment.beamSensors = beamSensorList;
+            mapFragment.updateDeviceList();
+
+            ArrayList<BeamSensor> newBS = new ArrayList<>();
+            for (BeamSensor bs : beamSensorList) {
+                if (!bs.isBeamSensorOwner()) {
+                    newBS.add(bs);
+                }
+            }
+            listFragment.updateDeviceList(newBS);
+
+        }
+
     }
 
 

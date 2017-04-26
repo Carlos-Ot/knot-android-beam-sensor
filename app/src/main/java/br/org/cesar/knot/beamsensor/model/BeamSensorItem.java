@@ -29,7 +29,7 @@ public class BeamSensorItem {
     @SerializedName("longitude")
     private double longitude;
 
-    private boolean status;
+    private boolean status = true;
 
     public double getLatitude() {
         return latitude;
